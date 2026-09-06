@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { inicioDeHoyAR } from "@/lib/fecha";
+import { avisarActividad } from "@/lib/realtime-admin";
 
 export async function confirmarSuma(servicioId: string) {
   const session = await auth();
@@ -51,6 +52,13 @@ export async function confirmarSuma(servicioId: string) {
         puntos: servicio.puntosOtorgados,
       },
     });
+  });
+
+  await avisarActividad({
+    tipo: "SUMA",
+    clienteNombre: cliente.nombre,
+    detalle: servicio.nombre,
+    puntos: servicio.puntosOtorgados,
   });
 
   redirect(`/sumar/${servicioId}/listo`);

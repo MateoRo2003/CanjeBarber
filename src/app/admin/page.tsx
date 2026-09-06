@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { cerrarSesion } from "@/app/actions";
 import { BotonSubmit } from "@/components/boton-submit";
 import { SkeletonLista } from "@/components/skeleton";
+import { AvisoActividad } from "@/components/aviso-actividad";
 import { crearServicio, crearPremio } from "./actions";
 import { ClientesSection } from "./clientes-section";
 import { CanjesSection } from "./canjes-section";
@@ -24,6 +25,7 @@ export default async function AdminPage({
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-10 px-6 py-10">
+      <AvisoActividad />
       <header className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-stone-900">
           Panel de administración

@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { avisarActividad } from "@/lib/realtime-admin";
 
 export async function confirmarCanje(premioId: string) {
   const session = await auth();
@@ -43,6 +44,13 @@ export async function confirmarCanje(premioId: string) {
         puntos: -premio.puntosCosto,
       },
     });
+  });
+
+  await avisarActividad({
+    tipo: "CANJE",
+    clienteNombre: cliente.nombre,
+    detalle: premio.nombre,
+    puntos: premio.puntosCosto,
   });
 
   redirect(`/canjear/${premioId}/listo`);

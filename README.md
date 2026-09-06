@@ -58,6 +58,26 @@ métodos (o, a futuro, ambos si se suma "vincular cuenta"). Toda la app
 identifica al usuario logueado por `session.user.clienteId` (no por
 email), justamente porque un cliente por teléfono no tiene email.
 
+## Aviso en vivo al admin (canje/suma por QR)
+
+Cuando un cliente canjea un premio o suma puntos escaneando un QR,
+`/admin` muestra un cartel al instante — **solo si el admin tiene esa
+página abierta en ese momento** (ej: un celu/tablet dejado en el
+mostrador). No es una notificación push real del sistema operativo: eso
+necesitaría un service worker + permisos del navegador y, en iPhone,
+que el admin "instale" el panel como app desde Safari — mucho más
+trabajo, y se descartó a pedido explícito en favor de esta versión más
+simple.
+
+Implementado con Supabase Realtime (**Broadcast**, no tablas ni RLS):
+el server manda un mensaje por ese canal después de cada canje/suma
+([src/lib/realtime-admin.ts](src/lib/realtime-admin.ts)) y el panel,
+si está abierto, lo escucha y muestra el cartel
+([src/components/aviso-actividad.tsx](src/components/aviso-actividad.tsx)).
+Ojo: como el server corre en Node.js (no en el navegador), necesita el
+paquete `ws` como transporte de WebSocket — Node < 22 no trae uno
+nativo.
+
 ## Variables de entorno
 
 Ver [.env](.env) (no se commitea). Claves relevantes:
@@ -67,6 +87,7 @@ Ver [.env](.env) (no se commitea). Claves relevantes:
 - `AUTH_SECRET`: secreto para firmar las cookies de sesión.
 - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`: credenciales OAuth de Google.
 - `ADMIN_EMAILS`: emails de Google (separados por coma) con acceso al panel de admin — ej: el dueño de la barbería y el desarrollador. Cada uno tiene que coincidir EXACTO con el email real de esa cuenta de Google.
+- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`: solo para el aviso en vivo de arriba (Realtime). La key es la "anon" pública — no da acceso a la base, solo a Realtime.
 
 ## Desarrollo
 
