@@ -16,8 +16,10 @@ export default async function CanjearPage({
 
   if (!session?.user?.email) {
     // El QR trae al cliente directo acá; si no está logueado, lo mandamos
-    // a loguearse primero desde la landing.
-    redirect("/");
+    // a loguearse y que la landing lo traiga de vuelta a ESTA página
+    // (si no, después del login siempre termina en /perfil y pierde el
+    // premio que quería canjear).
+    redirect(`/?callbackUrl=${encodeURIComponent(`/canjear/${id}`)}`);
   }
   if (session.user.isAdmin) redirect("/admin");
 

@@ -17,8 +17,10 @@ export default async function SumarPage({
 
   if (!session?.user?.email) {
     // El QR trae al cliente directo acá; si no está logueado, lo mandamos
-    // a loguearse primero desde la landing.
-    redirect("/");
+    // a loguearse y que la landing lo traiga de vuelta a ESTA página
+    // (si no, después del login siempre termina en /perfil y tiene que
+    // volver a escanear el QR para que la suma se aplique).
+    redirect(`/?callbackUrl=${encodeURIComponent(`/sumar/${id}`)}`);
   }
   if (session.user.isAdmin) redirect("/admin");
 

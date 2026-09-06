@@ -3,12 +3,19 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { loginConGoogle } from "@/app/actions";
 import { BotonSubmit } from "@/components/boton-submit";
+import { rutaSegura } from "@/lib/safe-path";
 
-export default async function LandingPage() {
+export default async function LandingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>;
+}) {
   const session = await auth();
+  const { callbackUrl } = await searchParams;
+  const destino = rutaSegura(callbackUrl);
 
   if (session?.user) {
-    redirect(session.user.isAdmin ? "/admin" : "/perfil");
+    redirect(destino ?? (session.user.isAdmin ? "/admin" : "/perfil"));
   }
 
   return (
@@ -26,10 +33,16 @@ export default async function LandingPage() {
               Sumá puntos en cada corte y canjealos por descuentos, productos
               y cortes gratis. Sin turnos, sin vueltas.
             </p>
+            {destino && (
+              <p className="max-w-xs text-balance text-sm text-accent">
+                Iniciá sesión y volvés directo a donde estabas.
+              </p>
+            )}
           </div>
         </div>
 
         <form action={loginConGoogle} className="flex flex-col items-center gap-3">
+          {destino && <input type="hidden" name="callbackUrl" value={destino} />}
           <BotonSubmit
             pendingText="Redirigiendo…"
             className="rounded-full border border-stone-300 bg-white px-6 py-3 font-medium text-stone-800 shadow-sm transition hover:bg-stone-100 hover:shadow active:scale-[0.98]"
