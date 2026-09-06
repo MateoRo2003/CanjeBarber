@@ -1,0 +1,62 @@
+// Prisma schema — Sistema de Puntos y Fidelización (Barbería)
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Cliente {
+  id             String        @id @default(cuid())
+  nombre         String
+  email          String        @unique
+  googleId       String        @unique
+  puntosActuales Int           @default(0)
+  fechaRegistro  DateTime      @default(now())
+  transacciones  Transaccion[]
+
+  @@map("clientes")
+}
+
+model Servicio {
+  id               String   @id @default(cuid())
+  nombre           String
+  puntosOtorgados  Int
+  activo           Boolean  @default(true)
+  creadoEn         DateTime @default(now())
+
+  @@map("servicios")
+}
+
+model Premio {
+  id          String   @id @default(cuid())
+  nombre      String
+  puntosCosto Int
+  activo      Boolean  @default(true)
+  creadoEn    DateTime @default(now())
+
+  @@map("premios")
+}
+
+enum TipoTransaccion {
+  SUMA
+  CANJE
+}
+
+model Transaccion {
+  id            String          @id @default(cuid())
+  cliente       Cliente         @relation(fields: [clienteId], references: [id])
+  clienteId     String
+  tipo          TipoTransaccion
+  // id del Servicio si tipo=SUMA, id del Premio si tipo=CANJE
+  referenciaId  String
+  puntos        Int
+  fecha         DateTime        @default(now())
+
+  @@index([clienteId])
+  @@map("transacciones")
+}

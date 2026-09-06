@@ -1,0 +1,71 @@
+# CanjeBarber — Sistema de Puntos y Fidelización
+
+App para una barbería: los clientes suman puntos por los servicios que
+consumen y los canjean por premios escaneando QRs, sin sacar turno.
+
+## Stack
+
+- Next.js (App Router) + TypeScript + Tailwind CSS v4
+- Auth.js (NextAuth v5) con proveedor de Google — **callback propio**
+- Prisma 7 (driver adapter `pg`) + Postgres (Supabase)
+- `qrcode` para generar los QR de cada premio y el QR general del local
+
+## Autenticación con Google — callback propio (no de Supabase)
+
+El login se hace con Auth.js directamente contra la API OAuth de Google.
+**No se usa Supabase Auth**: Supabase acá es sólo la base de datos
+Postgres (vía Prisma). Esto es intencional para que, durante el login, el
+usuario vea siempre el dominio propio de la barbería y nunca un dominio
+`*.supabase.co`.
+
+El callback OAuth vive dentro de esta misma app, en:
+
+```
+/api/auth/callback/google
+```
+
+(implementado en [src/app/api/auth/\[...nextauth\]/route.ts](src/app/api/auth/%5B...nextauth%5D/route.ts),
+configurado en [src/auth.ts](src/auth.ts)).
+
+### Cómo crear las credenciales de Google
+
+1. Andá a [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
+2. Creá un **OAuth Client ID** de tipo "Web application".
+3. En **Authorized redirect URIs** agregá:
+   - `http://localhost:3000/api/auth/callback/google` (desarrollo)
+   - `https://TU-DOMINIO.com/api/auth/callback/google` (producción, con el dominio real de la barbería)
+4. Copiá el **Client ID** y el **Client secret** a `.env`:
+   ```
+   GOOGLE_CLIENT_ID="..."
+   GOOGLE_CLIENT_SECRET="..."
+   ```
+5. En producción, actualizá también `NEXTAUTH_URL` en `.env` (o la variable de entorno del hosting) al dominio real.
+
+## Variables de entorno
+
+Ver [.env](.env) (no se commitea). Claves relevantes:
+
+- `DATABASE_URL` / `DIRECT_URL`: conexión a Postgres de Supabase (pooler transacción / sesión).
+- `NEXTAUTH_URL`: dominio propio de la app.
+- `AUTH_SECRET`: secreto para firmar las cookies de sesión.
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`: credenciales OAuth de Google.
+- `ADMIN_EMAIL`: email de Google del dueño/admin de la barbería.
+
+## Desarrollo
+
+```bash
+npm install
+npx prisma migrate dev   # aplica el esquema a la base
+npm run dev
+```
+
+## Modelo de datos
+
+`Cliente`, `Servicio`, `Premio`, `Transaccion` — ver [prisma/schema.prisma](prisma/schema.prisma).
+
+## Rutas
+
+- `/` — landing + login con Google.
+- `/perfil` — puntos del cliente + catálogo de premios.
+- `/canjear/[id]` — canje de un premio (a donde apunta su QR impreso).
+- `/admin` — panel del admin: buscador de clientes, sumar puntos, canjes recientes, gestión de servicios y premios, QRs.
