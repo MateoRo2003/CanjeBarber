@@ -1,8 +1,10 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { cerrarSesion } from "@/app/actions";
+import { SkeletonLista } from "@/components/skeleton";
+import { PremiosSection } from "./premios-section";
 
 export default async function PerfilPage() {
   const session = await auth();
@@ -59,41 +61,9 @@ export default async function PerfilPage() {
 
       <section className="flex flex-col gap-3">
         <h2 className="font-semibold text-stone-900">Premios disponibles</h2>
-        {premios.length === 0 && (
-          <p className="rounded-xl border border-dashed border-stone-300 px-4 py-6 text-center text-sm text-stone-500">
-            Todavía no hay premios cargados. Volvé a mirar más adelante.
-          </p>
-        )}
-        <ul className="flex flex-col gap-3">
-          {premios.map((premio) => {
-            const alcanza = cliente.puntosActuales >= premio.puntosCosto;
-            return (
-              <li
-                key={premio.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 shadow-sm"
-              >
-                <div>
-                  <p className="font-medium text-stone-900">
-                    {premio.nombre}
-                  </p>
-                  <p className="text-sm text-stone-500">
-                    {premio.puntosCosto} puntos
-                  </p>
-                </div>
-                <Link
-                  href={`/canjear/${premio.id}`}
-                  className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition ${
-                    alcanza
-                      ? "bg-accent text-accent-foreground hover:opacity-90"
-                      : "bg-stone-100 text-stone-400"
-                  }`}
-                >
-                  {alcanza ? "Canjear" : "Ver"}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <Suspense fallback={<SkeletonLista filas={3} />}>
+          <PremiosSection puntosActuales={cliente.puntosActuales} />
+        </Suspense>
       </section>
     </main>
   );

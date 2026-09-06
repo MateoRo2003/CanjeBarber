@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { BotonSubmit } from "@/components/boton-submit";
 import { confirmarCanje } from "./actions";
 
 export default async function CanjearPage({
@@ -71,12 +72,12 @@ export default async function CanjearPage({
         {cliente.puntosActuales} puntos
       </p>
       <form action={confirmar} className="w-full">
-        <button
-          type="submit"
+        <BotonSubmit
+          pendingText="Canjeando…"
           className="w-full rounded-full bg-accent px-6 py-3 font-medium text-accent-foreground transition hover:opacity-90 active:scale-[0.98]"
         >
           Confirmar canje
-        </button>
+        </BotonSubmit>
       </form>
       <VolverAlPerfil texto="Cancelar" />
     </MensajeCentral>

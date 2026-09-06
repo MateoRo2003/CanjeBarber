@@ -2,6 +2,7 @@ import { Scissors } from "lucide-react";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { loginConGoogle } from "@/app/actions";
+import { BotonSubmit } from "@/components/boton-submit";
 
 export default async function LandingPage() {
   const session = await auth();
@@ -29,9 +30,9 @@ export default async function LandingPage() {
         </div>
 
         <form action={loginConGoogle} className="flex flex-col items-center gap-3">
-          <button
-            type="submit"
-            className="flex items-center gap-3 rounded-full border border-stone-300 bg-white px-6 py-3 font-medium text-stone-800 shadow-sm transition hover:bg-stone-100 active:scale-[0.98]"
+          <BotonSubmit
+            pendingText="Redirigiendo…"
+            className="rounded-full border border-stone-300 bg-white px-6 py-3 font-medium text-stone-800 shadow-sm transition hover:bg-stone-100 hover:shadow active:scale-[0.98]"
           >
             <svg viewBox="0 0 48 48" className="h-5 w-5 shrink-0" aria-hidden>
               <path
@@ -52,7 +53,7 @@ export default async function LandingPage() {
               />
             </svg>
             Iniciar sesión con Google
-          </button>
+          </BotonSubmit>
           <p className="text-xs text-stone-400">
             Sin contraseñas. Tu cuenta de Google es tu carnet de puntos.
           </p>

@@ -87,3 +87,51 @@ export async function togglePremio(formData: FormData) {
   });
   revalidatePath("/admin");
 }
+
+export async function editarServicio(formData: FormData) {
+  await requireAdmin();
+
+  const id = String(formData.get("id") ?? "");
+  const nombre = String(formData.get("nombre") ?? "").trim();
+  const puntos = Number(formData.get("puntosOtorgados"));
+  if (!id || !nombre || !Number.isFinite(puntos) || puntos <= 0) {
+    throw new Error("Datos de servicio inválidos.");
+  }
+
+  await prisma.servicio.update({
+    where: { id },
+    data: { nombre, puntosOtorgados: puntos },
+  });
+  revalidatePath("/admin");
+}
+
+export async function eliminarServicio(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get("id") ?? "");
+  await prisma.servicio.delete({ where: { id } });
+  revalidatePath("/admin");
+}
+
+export async function editarPremio(formData: FormData) {
+  await requireAdmin();
+
+  const id = String(formData.get("id") ?? "");
+  const nombre = String(formData.get("nombre") ?? "").trim();
+  const puntos = Number(formData.get("puntosCosto"));
+  if (!id || !nombre || !Number.isFinite(puntos) || puntos <= 0) {
+    throw new Error("Datos de premio inválidos.");
+  }
+
+  await prisma.premio.update({
+    where: { id },
+    data: { nombre, puntosCosto: puntos },
+  });
+  revalidatePath("/admin");
+}
+
+export async function eliminarPremio(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get("id") ?? "");
+  await prisma.premio.delete({ where: { id } });
+  revalidatePath("/admin");
+}
