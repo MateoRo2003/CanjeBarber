@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import { esAdminEmail } from "@/lib/admin-emails";
 import { prisma } from "@/lib/prisma";
 
 // IMPORTANTE: acá NO se usa Supabase Auth. El login con Google lo maneja
@@ -42,9 +43,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     async jwt({ token }) {
       if (token.email) {
-        token.isAdmin =
-          token.email.toLowerCase() ===
-          process.env.ADMIN_EMAIL?.toLowerCase();
+        token.isAdmin = esAdminEmail(token.email);
       }
       return token;
     },

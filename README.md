@@ -49,7 +49,7 @@ Ver [.env](.env) (no se commitea). Claves relevantes:
 - `NEXTAUTH_URL`: dominio propio de la app.
 - `AUTH_SECRET`: secreto para firmar las cookies de sesión.
 - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`: credenciales OAuth de Google.
-- `ADMIN_EMAIL`: email de Google del dueño/admin de la barbería.
+- `ADMIN_EMAILS`: emails de Google (separados por coma) con acceso al panel de admin — ej: el dueño de la barbería y el desarrollador. Cada uno tiene que coincidir EXACTO con el email real de esa cuenta de Google.
 
 ## Desarrollo
 
