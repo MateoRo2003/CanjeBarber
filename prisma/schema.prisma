@@ -13,8 +13,16 @@ datasource db {
 model Cliente {
   id             String        @id @default(cuid())
   nombre         String
-  email          String        @unique
-  googleId       String        @unique
+  // Login con Google (uno de los dos métodos de login, el otro es
+  // teléfono+contraseña más abajo — un Cliente tiene uno de los dos,
+  // o eventualmente ambos si más adelante se suma "vincular cuenta").
+  email          String?       @unique
+  googleId       String?       @unique
+  // Login alternativo con teléfono+contraseña (sin verificación por SMS:
+  // es solo un identificador + contraseña propios de la app, no prueba
+  // que el teléfono sea realmente de esa persona).
+  telefono       String?       @unique
+  passwordHash   String?
   puntosActuales Int           @default(0)
   fechaRegistro  DateTime      @default(now())
   transacciones  Transaccion[]

@@ -15,7 +15,7 @@ export default async function SumarPage({
   const { id } = await params;
   const session = await auth();
 
-  if (!session?.user?.email) {
+  if (!session?.user?.clienteId) {
     // El QR trae al cliente directo acá; si no está logueado, lo mandamos
     // a loguearse y que la landing lo traiga de vuelta a ESTA página
     // (si no, después del login siempre termina en /perfil y tiene que
@@ -25,7 +25,7 @@ export default async function SumarPage({
   if (session.user.isAdmin) redirect("/admin");
 
   const [cliente, servicio] = await Promise.all([
-    prisma.cliente.findUnique({ where: { email: session.user.email } }),
+    prisma.cliente.findUnique({ where: { id: session.user.clienteId } }),
     prisma.servicio.findUnique({ where: { id } }),
   ]);
 

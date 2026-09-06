@@ -13,10 +13,10 @@ export default async function CanjeListoPage({
 }) {
   const { id } = await params;
   const session = await auth();
-  if (!session?.user?.email) redirect("/");
+  if (!session?.user?.clienteId) redirect("/");
 
   const [cliente, premio] = await Promise.all([
-    prisma.cliente.findUnique({ where: { email: session.user.email } }),
+    prisma.cliente.findUnique({ where: { id: session.user.clienteId } }),
     prisma.premio.findUnique({ where: { id } }),
   ]);
   if (!cliente || !premio) redirect("/perfil");

@@ -71,6 +71,17 @@ export default async function LandingPage({
             Sin contraseñas. Tu cuenta de Google es tu carnet de puntos.
           </p>
         </form>
+
+        <a
+          href={
+            destino
+              ? `/telefono?callbackUrl=${encodeURIComponent(destino)}`
+              : "/telefono"
+          }
+          className="text-xs text-stone-500 underline underline-offset-2 hover:text-stone-700"
+        >
+          ¿Alternativa? Registrate con tu número de teléfono
+        </a>
       </section>
 
       <footer className="px-6 pb-6 text-center text-xs text-stone-400">

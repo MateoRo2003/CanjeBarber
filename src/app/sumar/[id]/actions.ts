@@ -7,10 +7,10 @@ import { inicioDeHoyAR } from "@/lib/fecha";
 
 export async function confirmarSuma(servicioId: string) {
   const session = await auth();
-  if (!session?.user?.email) redirect("/");
+  if (!session?.user?.clienteId) redirect("/");
 
   const cliente = await prisma.cliente.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.clienteId },
   });
   if (!cliente) redirect("/");
 

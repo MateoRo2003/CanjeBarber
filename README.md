@@ -41,6 +41,23 @@ configurado en [src/auth.ts](src/auth.ts)).
    ```
 5. En producción, actualizá también `NEXTAUTH_URL` en `.env` (o la variable de entorno del hosting) al dominio real.
 
+### Login alternativo: teléfono + contraseña (sin SMS)
+
+Además de Google, un cliente puede entrar con un número de teléfono y una
+contraseña propia (link "¿Alternativa? Registrate con tu número de
+teléfono" debajo del botón de Google, en `/telefono`). **No hay
+verificación por SMS**: es solo un identificador + contraseña guardados
+en la propia app (con `scrypt`, ver [src/lib/password.ts](src/lib/password.ts)), pensado
+como alternativa de bajo costo — no prueba que el teléfono sea
+realmente de esa persona. La primera vez que alguien usa un teléfono se
+le crea la cuenta sola; las siguientes veces, valida la contraseña.
+
+Por eso el modelo `Cliente` tiene `email`/`googleId` y
+`telefono`/`passwordHash` opcionales — un cliente tiene uno de los dos
+métodos (o, a futuro, ambos si se suma "vincular cuenta"). Toda la app
+identifica al usuario logueado por `session.user.clienteId` (no por
+email), justamente porque un cliente por teléfono no tiene email.
+
 ## Variables de entorno
 
 Ver [.env](.env) (no se commitea). Claves relevantes:
@@ -66,6 +83,7 @@ npm run dev
 ## Rutas
 
 - `/` — landing + login con Google.
+- `/telefono` — login/registro alternativo con teléfono + contraseña.
 - `/perfil` — puntos del cliente + catálogo de premios.
 - `/canjear/[id]` — canje de un premio (a donde apunta su QR impreso).
 - `/sumar/[id]` — el cliente suma los puntos de un servicio escaneando su

@@ -10,6 +10,7 @@ export async function ClientesSection({ query }: { query: string }) {
             OR: [
               { nombre: { contains: query, mode: "insensitive" } },
               { email: { contains: query, mode: "insensitive" } },
+              { telefono: { contains: query, mode: "insensitive" } },
             ],
           }
         : {},
@@ -38,7 +39,9 @@ export async function ClientesSection({ query }: { query: string }) {
           >
             <div>
               <p className="font-medium">{cliente.nombre}</p>
-              <p className="text-sm text-stone-500">{cliente.email}</p>
+              <p className="text-sm text-stone-500">
+                {[cliente.email, cliente.telefono].filter(Boolean).join(" · ")}
+              </p>
               <p className="text-sm text-stone-500">
                 {cliente.puntosActuales} puntos
               </p>

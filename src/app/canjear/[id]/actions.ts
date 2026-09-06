@@ -6,10 +6,10 @@ import { prisma } from "@/lib/prisma";
 
 export async function confirmarCanje(premioId: string) {
   const session = await auth();
-  if (!session?.user?.email) redirect("/");
+  if (!session?.user?.clienteId) redirect("/");
 
   const cliente = await prisma.cliente.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.clienteId },
   });
   if (!cliente) redirect("/");
 

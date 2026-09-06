@@ -8,11 +8,11 @@ import { PremiosSection } from "./premios-section";
 
 export default async function PerfilPage() {
   const session = await auth();
-  if (!session?.user?.email) redirect("/");
+  if (!session?.user?.clienteId) redirect("/");
   if (session.user.isAdmin) redirect("/admin");
 
   const cliente = await prisma.cliente.findUnique({
-    where: { email: session.user.email },
+    where: { id: session.user.clienteId },
   });
   if (!cliente) redirect("/");
 

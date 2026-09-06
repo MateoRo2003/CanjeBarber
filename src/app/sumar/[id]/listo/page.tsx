@@ -11,10 +11,10 @@ export default async function SumaListaPage({
 }) {
   const { id } = await params;
   const session = await auth();
-  if (!session?.user?.email) redirect("/");
+  if (!session?.user?.clienteId) redirect("/");
 
   const [cliente, servicio] = await Promise.all([
-    prisma.cliente.findUnique({ where: { email: session.user.email } }),
+    prisma.cliente.findUnique({ where: { id: session.user.clienteId } }),
     prisma.servicio.findUnique({ where: { id } }),
   ]);
   if (!cliente || !servicio) redirect("/perfil");

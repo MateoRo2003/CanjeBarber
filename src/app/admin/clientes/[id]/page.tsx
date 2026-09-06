@@ -52,7 +52,9 @@ export default async function ClienteDetallePage({
 
       <header className="flex flex-col gap-1">
         <h1 className="text-xl font-bold text-stone-900">{cliente.nombre}</h1>
-        <p className="text-sm text-stone-500">{cliente.email}</p>
+        <p className="text-sm text-stone-500">
+          {[cliente.email, cliente.telefono].filter(Boolean).join(" · ")}
+        </p>
         <p className="text-xs text-stone-400">
           Cliente desde{" "}
           {new Date(cliente.fechaRegistro).toLocaleDateString("es-AR")}
