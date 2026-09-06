@@ -94,6 +94,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       } else if (user && account?.provider === "telefono") {
         token.clienteId = user.id;
         token.isAdmin = false;
+      } else if (!token.isAdmin && !token.clienteId && token.email) {
+        // Sesión vieja: un JWT emitido ANTES de que existiera clienteId
+        // (antes de sumar el login por teléfono). Sin esto, session.user
+        // queda con isAdmin=false y clienteId=null para siempre — ni
+        // cliente ni admin — y /perfil ↔ / entran en loop de redirects.
+        // Se autocompleta acá, en vez de forzar a cerrar sesión.
+        if (esAdminEmail(token.email)) {
+          token.isAdmin = true;
+        } else {
+          const cliente = await prisma.cliente.upsert({
+            where: { email: token.email },
+            update: {},
+            create: { nombre: token.name ?? "", email: token.email },
+          });
+          token.clienteId = cliente.id;
+          token.isAdmin = false;
+        }
       }
       return token;
     },
