@@ -26,8 +26,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     // Al loguearse, creamos (o encontramos) el registro de Cliente en
     // nuestra propia tabla `clientes`, con 0 puntos si es la primera vez.
+    // Al admin NO se le crea Cliente: no consume el catálogo de premios,
+    // así que no tiene sentido que aparezca en el buscador de clientes.
     async signIn({ user, account }) {
       if (!user.email || !account?.providerAccountId) return false;
+      if (esAdminEmail(user.email)) return true;
 
       await prisma.cliente.upsert({
         where: { email: user.email },
