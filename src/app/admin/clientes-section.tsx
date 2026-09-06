@@ -42,6 +42,12 @@ export async function ClientesSection({ query }: { query: string }) {
               <p className="text-sm text-stone-500">
                 {cliente.puntosActuales} puntos
               </p>
+              <a
+                href={`/admin/clientes/${cliente.id}`}
+                className="text-xs text-stone-500 underline underline-offset-2 transition hover:text-stone-700"
+              >
+                Ver ficha e historial
+              </a>
             </div>
             {servicios.length > 0 ? (
               <form action={sumarPuntos} className="flex gap-2">

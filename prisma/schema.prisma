@@ -45,6 +45,9 @@ model Premio {
 enum TipoTransaccion {
   SUMA
   CANJE
+  // Ajuste manual de puntos hecho por el admin (corrección, cortesía,
+  // etc.), positivo o negativo, sin pasar por servicio ni premio.
+  AJUSTE
 }
 
 model Transaccion {
@@ -52,9 +55,12 @@ model Transaccion {
   cliente       Cliente         @relation(fields: [clienteId], references: [id])
   clienteId     String
   tipo          TipoTransaccion
-  // id del Servicio si tipo=SUMA, id del Premio si tipo=CANJE
+  // id del Servicio si tipo=SUMA, id del Premio si tipo=CANJE,
+  // "manual" si tipo=AJUSTE.
   referenciaId  String
   puntos        Int
+  // Motivo del ajuste manual (solo aplica si tipo=AJUSTE).
+  nota          String?
   fecha         DateTime        @default(now())
 
   @@index([clienteId])

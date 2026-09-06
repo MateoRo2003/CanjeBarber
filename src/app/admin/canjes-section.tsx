@@ -1,9 +1,12 @@
 import { prisma } from "@/lib/prisma";
 
+// Canjes y ajustes manuales — no incluye sumas normales por servicio para
+// no ensuciar la lista con lo rutinario; esto es lo que vale la pena que
+// el admin vea de un vistazo (incluye ajustes para poder auditarlos).
 export async function CanjesSection() {
-  const [canjesRecientes, premios] = await Promise.all([
+  const [transacciones, premios] = await Promise.all([
     prisma.transaccion.findMany({
-      where: { tipo: "CANJE" },
+      where: { tipo: { in: ["CANJE", "AJUSTE"] } },
       orderBy: { fecha: "desc" },
       take: 15,
       include: { cliente: true },
@@ -13,22 +16,28 @@ export async function CanjesSection() {
 
   const premiosPorId = new Map(premios.map((p) => [p.id, p]));
 
-  if (canjesRecientes.length === 0) {
-    return <p className="text-sm text-stone-500">Todavía no hay canjes.</p>;
+  if (transacciones.length === 0) {
+    return (
+      <p className="text-sm text-stone-500">
+        Todavía no hay canjes ni ajustes.
+      </p>
+    );
   }
 
   return (
     <ul className="flex flex-col gap-2">
-      {canjesRecientes.map((t) => (
+      {transacciones.map((t) => (
         <li
           key={t.id}
           className="flex items-center justify-between rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm"
         >
           <span>
-            <strong>{t.cliente.nombre}</strong> canjeó{" "}
-            {premiosPorId.get(t.referenciaId)?.nombre ?? "premio eliminado"}
+            <strong>{t.cliente.nombre}</strong>{" "}
+            {t.tipo === "CANJE"
+              ? `canjeó ${premiosPorId.get(t.referenciaId)?.nombre ?? "premio eliminado"}`
+              : `ajuste manual: ${t.puntos >= 0 ? "+" : ""}${t.puntos} pts (${t.nota})`}
           </span>
-          <span className="text-stone-500">
+          <span className="shrink-0 text-stone-500">
             {new Date(t.fecha).toLocaleString("es-AR")}
           </span>
         </li>

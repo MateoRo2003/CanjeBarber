@@ -135,3 +135,55 @@ export async function eliminarPremio(formData: FormData) {
   await prisma.premio.delete({ where: { id } });
   revalidatePath("/admin");
 }
+
+/**
+ * Ajuste manual de puntos (corrección, cortesía, descuento por error,
+ * etc.), sin pasar por un servicio o premio. `delta` puede ser positivo
+ * (suma) o negativo (resta) — nunca se permite que el saldo quede
+ * negativo.
+ */
+export async function ajustarPuntos(formData: FormData) {
+  await requireAdmin();
+
+  const clienteId = String(formData.get("clienteId") ?? "");
+  const delta = Number(formData.get("delta"));
+  const nota = String(formData.get("nota") ?? "").trim();
+
+  if (!clienteId || !Number.isFinite(delta) || !Number.isInteger(delta) || delta === 0) {
+    throw new Error("Ingresá una cantidad de puntos válida (positiva o negativa, distinta de 0).");
+  }
+  if (!nota) {
+    throw new Error("Contá el motivo del ajuste.");
+  }
+
+  await prisma.$transaction(async (tx) => {
+    const cliente = await tx.cliente.findUniqueOrThrow({
+      where: { id: clienteId },
+    });
+
+    const nuevoTotal = cliente.puntosActuales + delta;
+    if (nuevoTotal < 0) {
+      throw new Error(
+        `No se puede: le quedarían ${nuevoTotal} puntos. Como mucho podés restarle ${cliente.puntosActuales}.`,
+      );
+    }
+
+    await tx.cliente.update({
+      where: { id: clienteId },
+      data: { puntosActuales: nuevoTotal },
+    });
+
+    await tx.transaccion.create({
+      data: {
+        clienteId,
+        tipo: "AJUSTE",
+        referenciaId: "manual",
+        puntos: delta,
+        nota,
+      },
+    });
+  });
+
+  revalidatePath("/admin");
+  revalidatePath(`/admin/clientes/${clienteId}`);
+}

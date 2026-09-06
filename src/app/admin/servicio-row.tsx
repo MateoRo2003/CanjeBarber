@@ -88,38 +88,48 @@ export function ServicioRow({ servicio }: { servicio: Servicio }) {
   }
 
   return (
-    <li className="flex items-center justify-between gap-2 rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm">
-      <span>
-        {servicio.nombre} · {servicio.puntosOtorgados} pts{" "}
-        {!servicio.activo && <span className="text-stone-400">(inactivo)</span>}
-      </span>
-      <div className="flex items-center gap-1">
-        <form action={toggleServicio}>
-          <input type="hidden" name="id" value={servicio.id} />
-          <BotonSubmit
-            pendingText="…"
-            className="rounded-lg px-2 py-1.5 text-xs text-stone-600 underline underline-offset-2 transition hover:bg-stone-100"
+    <li className="flex flex-col gap-1 rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm">
+      <div className="flex items-center justify-between gap-2">
+        <span>
+          {servicio.nombre} · {servicio.puntosOtorgados} pts{" "}
+          {!servicio.activo && (
+            <span className="text-stone-400">(inactivo)</span>
+          )}
+        </span>
+        <div className="flex items-center gap-1">
+          <form action={toggleServicio}>
+            <input type="hidden" name="id" value={servicio.id} />
+            <BotonSubmit
+              pendingText="…"
+              className="rounded-lg px-2 py-1.5 text-xs text-stone-600 underline underline-offset-2 transition hover:bg-stone-100"
+            >
+              {servicio.activo ? "Desactivar" : "Activar"}
+            </BotonSubmit>
+          </form>
+          <button
+            type="button"
+            onClick={() => setModo("editar")}
+            className="rounded-lg p-1.5 text-stone-500 transition hover:bg-stone-100 hover:text-stone-700"
+            aria-label="Editar"
           >
-            {servicio.activo ? "Desactivar" : "Activar"}
-          </BotonSubmit>
-        </form>
-        <button
-          type="button"
-          onClick={() => setModo("editar")}
-          className="rounded-lg p-1.5 text-stone-500 transition hover:bg-stone-100 hover:text-stone-700"
-          aria-label="Editar"
-        >
-          <Pencil className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => setModo("eliminar")}
-          className="rounded-lg p-1.5 text-stone-500 transition hover:bg-red-50 hover:text-red-600"
-          aria-label="Eliminar"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
+            <Pencil className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setModo("eliminar")}
+            className="rounded-lg p-1.5 text-stone-500 transition hover:bg-red-50 hover:text-red-600"
+            aria-label="Eliminar"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
       </div>
+      <a
+        href={`/admin/servicios/${servicio.id}/qr`}
+        className="text-xs text-stone-500 underline underline-offset-2 transition hover:text-stone-700"
+      >
+        Ver / imprimir QR para sumar puntos (/sumar/{servicio.id})
+      </a>
     </li>
   );
 }

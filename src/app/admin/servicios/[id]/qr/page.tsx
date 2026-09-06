@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { BotonImprimir } from "@/components/boton-imprimir";
 import { urlBase } from "@/lib/url-base";
 
-export default async function QrPremioPage({
+export default async function QrServicioPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -15,10 +15,10 @@ export default async function QrPremioPage({
   if (!session.user.isAdmin) redirect("/perfil");
 
   const { id } = await params;
-  const premio = await prisma.premio.findUnique({ where: { id } });
-  if (!premio) notFound();
+  const servicio = await prisma.servicio.findUnique({ where: { id } });
+  if (!servicio) notFound();
 
-  const url = `${urlBase()}/canjear/${premio.id}`;
+  const url = `${urlBase()}/sumar/${servicio.id}`;
   const qrDataUrl = await QRCode.toDataURL(url, {
     width: 480,
     margin: 2,
@@ -32,15 +32,21 @@ export default async function QrPremioPage({
           ← Volver al panel
         </a>
       </p>
-      <h1 className="text-xl font-bold text-stone-900">{premio.nombre}</h1>
-      <p className="text-sm text-stone-500">{premio.puntosCosto} puntos</p>
+      <h1 className="text-xl font-bold text-stone-900">{servicio.nombre}</h1>
+      <p className="text-sm text-stone-500">
+        +{servicio.puntosOtorgados} puntos
+      </p>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={qrDataUrl}
-        alt={`Código QR para canjear ${premio.nombre}`}
+        alt={`Código QR para sumar puntos de ${servicio.nombre}`}
         className="w-full max-w-xs rounded-xl border border-stone-200"
       />
       <p className="break-all text-xs text-stone-400">{url}</p>
+      <p className="text-xs text-stone-400">
+        Poné este QR solo en el mostrador — cualquiera que lo escanee suma
+        estos puntos a su cuenta (máximo una vez por día).
+      </p>
       <BotonImprimir />
     </main>
   );

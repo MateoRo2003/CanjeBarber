@@ -30,6 +30,12 @@ export default async function AdminPage({
         </h1>
         <div className="flex items-center gap-4">
           <a
+            href="/admin/reportes"
+            className="text-sm text-stone-500 underline underline-offset-2 transition hover:text-stone-700"
+          >
+            Reportes
+          </a>
+          <a
             href="/admin/qr-local"
             className="text-sm text-stone-500 underline underline-offset-2 transition hover:text-stone-700"
           >
@@ -63,9 +69,9 @@ export default async function AdminPage({
         </Suspense>
       </section>
 
-      {/* Canjes recientes */}
+      {/* Canjes y ajustes recientes */}
       <section className="flex flex-col gap-3">
-        <h2 className="font-semibold">Canjes recientes</h2>
+        <h2 className="font-semibold">Actividad reciente</h2>
         <Suspense fallback={<SkeletonLista filas={2} />}>
           <CanjesSection />
         </Suspense>

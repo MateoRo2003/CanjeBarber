@@ -68,4 +68,11 @@ npm run dev
 - `/` — landing + login con Google.
 - `/perfil` — puntos del cliente + catálogo de premios.
 - `/canjear/[id]` — canje de un premio (a donde apunta su QR impreso).
-- `/admin` — panel del admin: buscador de clientes, sumar puntos, canjes recientes, gestión de servicios y premios, QRs.
+- `/sumar/[id]` — el cliente suma los puntos de un servicio escaneando su
+  QR (impreso en el mostrador, junto a los QR de premios). Límite de una
+  vez por día por cliente+servicio para que no se pueda re-escanear una
+  foto del QR desde casa — el control real sigue siendo que el QR esté
+  físicamente en el mostrador, igual que los de premios.
+- `/admin` — panel del admin: buscador de clientes, sumar puntos, actividad reciente (canjes + ajustes), gestión de servicios y premios, QRs.
+- `/admin/clientes/[id]` — ficha de un cliente: historial completo de transacciones y ajuste manual de puntos (+/-, con motivo).
+- `/admin/reportes` — KPIs de uso (clientes, puntos en circulación, altas recientes, clientes sin actividad) y ranking de servicios/premios más usados.

@@ -1,11 +1,8 @@
 import { redirect } from "next/navigation";
 import QRCode from "qrcode";
 import { auth } from "@/auth";
-import { BotonImprimir } from "../premios/[id]/qr/boton-imprimir";
-
-function urlBase() {
-  return process.env.NEXTAUTH_URL ?? "http://localhost:3000";
-}
+import { BotonImprimir } from "@/components/boton-imprimir";
+import { urlBase } from "@/lib/url-base";
 
 // QR general del local: va pegado en la barbería o se comparte por
 // redes/WhatsApp. Apunta siempre a la landing (dominio propio).
