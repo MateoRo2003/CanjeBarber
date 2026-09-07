@@ -25,10 +25,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       id: "telefono",
       name: "Teléfono",
       credentials: {
+        nombre: { label: "Nombre y apellido", type: "text" },
         telefono: { label: "Teléfono", type: "text" },
         password: { label: "Contraseña", type: "password" },
       },
       async authorize(credentials) {
+        const nombre = String(credentials?.nombre ?? "").trim();
         const telefono = normalizarTelefono(String(credentials?.telefono ?? ""));
         const password = String(credentials?.password ?? "");
         if (!telefono || password.length < 4) return null;
@@ -36,9 +38,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         let cliente = await prisma.cliente.findUnique({ where: { telefono } });
 
         if (!cliente) {
+          if (!nombre) return null;
           cliente = await prisma.cliente.create({
             data: {
-              nombre: telefono,
+              nombre,
               telefono,
               passwordHash: hashPassword(password),
             },
@@ -48,6 +51,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           !verifyPassword(password, cliente.passwordHash)
         ) {
           return null;
+        } else if (nombre && cliente.nombre === cliente.telefono) {
+          // Cuenta creada antes de pedir nombre (quedó con el teléfono
+          // como "nombre" de placeholder) — se corrige sola apenas la
+          // persona vuelve a loguearse con un nombre real cargado.
+          cliente = await prisma.cliente.update({
+            where: { id: cliente.id },
+            data: { nombre },
+          });
         }
 
         return { id: cliente.id, name: cliente.nombre };

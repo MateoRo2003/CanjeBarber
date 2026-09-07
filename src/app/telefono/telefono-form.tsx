@@ -16,6 +16,21 @@ export function TelefonoForm({ callbackUrl }: { callbackUrl: string | null }) {
       )}
 
       <div className="flex flex-col gap-1 text-left">
+        <label htmlFor="nombre" className="text-xs text-stone-500">
+          Nombre y apellido
+        </label>
+        <input
+          id="nombre"
+          name="nombre"
+          type="text"
+          autoComplete="name"
+          required
+          placeholder="Tu nombre completo"
+          className="rounded-lg border border-stone-300 px-3 py-2 text-sm transition hover:border-stone-400 focus:border-stone-500 focus:outline-none"
+        />
+      </div>
+
+      <div className="flex flex-col gap-1 text-left">
         <label htmlFor="telefono" className="text-xs text-stone-500">
           Número de teléfono
         </label>
@@ -61,7 +76,8 @@ export function TelefonoForm({ callbackUrl }: { callbackUrl: string | null }) {
 
       <p className="text-xs text-stone-400">
         Si es la primera vez, se crea tu cuenta con estos datos. Guardá bien
-        tu contraseña: no hay forma de recuperarla si te la olvidás.
+        tu teléfono y tu contraseña: no hay forma de recuperarla si te la
+        olvidás.
       </p>
     </form>
   );

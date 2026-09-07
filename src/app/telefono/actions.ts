@@ -10,10 +10,14 @@ export async function loginConTelefono(
   _prevState: TelefonoState,
   formData: FormData,
 ): Promise<TelefonoState> {
+  const nombre = String(formData.get("nombre") ?? "").trim();
   const telefono = String(formData.get("telefono") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const callbackUrl = rutaSegura(String(formData.get("callbackUrl") ?? ""));
 
+  if (!nombre) {
+    return { error: "Ingresá tu nombre y apellido." };
+  }
   if (!telefono) {
     return { error: "Ingresá tu número de teléfono." };
   }
@@ -23,6 +27,7 @@ export async function loginConTelefono(
 
   try {
     await signIn("telefono", {
+      nombre,
       telefono,
       password,
       redirectTo: callbackUrl ?? "/redirigiendo",
