@@ -2,7 +2,8 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { BotonSubmit } from "@/components/boton-submit";
-import { ajustarPuntos } from "../../actions";
+import { ajustarPuntos, toggleClienteActivo } from "../../actions";
+import { EliminarCliente } from "./eliminar-cliente";
 
 export default async function ClienteDetallePage({
   params,
@@ -51,7 +52,16 @@ export default async function ClienteDetallePage({
       </a>
 
       <header className="flex flex-col gap-1">
-        <h1 className="text-xl font-bold text-stone-900">{cliente.nombre}</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-bold text-stone-900">
+            {cliente.nombre}
+          </h1>
+          {!cliente.activo && (
+            <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
+              Deshabilitado
+            </span>
+          )}
+        </div>
         <p className="text-sm text-stone-500">
           {[cliente.email, cliente.telefono].filter(Boolean).join(" · ")}
         </p>
@@ -147,6 +157,49 @@ export default async function ClienteDetallePage({
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white p-4">
+        <h2 className="font-semibold text-stone-900">Zona de riesgo</h2>
+
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-stone-200 p-3">
+          <div>
+            <p className="text-sm font-medium text-stone-900">
+              {cliente.activo ? "Deshabilitar cuenta" : "Habilitar cuenta"}
+            </p>
+            <p className="text-xs text-stone-500">
+              {cliente.activo
+                ? "No va a poder iniciar sesión ni usar la app. Conserva sus puntos e historial — se puede revertir cuando quieras."
+                : "Va a poder volver a iniciar sesión y usar la app normalmente."}
+            </p>
+          </div>
+          <form action={toggleClienteActivo}>
+            <input type="hidden" name="id" value={cliente.id} />
+            <BotonSubmit
+              pendingText="…"
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+                cliente.activo
+                  ? "border border-stone-300 text-stone-700 hover:bg-stone-100"
+                  : "bg-stone-900 text-white hover:bg-stone-700"
+              }`}
+            >
+              {cliente.activo ? "Deshabilitar" : "Habilitar"}
+            </BotonSubmit>
+          </form>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-stone-200 p-3">
+          <div>
+            <p className="text-sm font-medium text-stone-900">
+              Eliminar cliente
+            </p>
+            <p className="text-xs text-stone-500">
+              Borra la cuenta y todo su historial para siempre. No se puede
+              deshacer.
+            </p>
+          </div>
+          <EliminarCliente clienteId={cliente.id} clienteNombre={cliente.nombre} />
+        </div>
       </section>
     </main>
   );

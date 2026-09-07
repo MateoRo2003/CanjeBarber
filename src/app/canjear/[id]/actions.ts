@@ -13,6 +13,9 @@ export async function confirmarCanje(premioId: string) {
     where: { id: session.user.clienteId },
   });
   if (!cliente) redirect("/");
+  if (!cliente.activo) {
+    throw new Error("Tu cuenta fue deshabilitada. Consultá con el barbero.");
+  }
 
   const premio = await prisma.premio.findUnique({ where: { id: premioId } });
   if (!premio || !premio.activo) {

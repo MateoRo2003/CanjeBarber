@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 
@@ -186,4 +187,34 @@ export async function ajustarPuntos(formData: FormData) {
 
   revalidatePath("/admin");
   revalidatePath(`/admin/clientes/${clienteId}`);
+}
+
+/**
+ * Deshabilita o rehabilita a un cliente: no puede iniciar sesión ni usar
+ * la app mientras esté deshabilitado, pero conserva todos sus puntos e
+ * historial (a diferencia de eliminarlo). Reversible en cualquier momento.
+ */
+export async function toggleClienteActivo(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get("id") ?? "");
+  const cliente = await prisma.cliente.findUniqueOrThrow({ where: { id } });
+  await prisma.cliente.update({
+    where: { id },
+    data: { activo: !cliente.activo },
+  });
+  revalidatePath("/admin");
+  revalidatePath(`/admin/clientes/${id}`);
+}
+
+/**
+ * Elimina al cliente de forma DEFINITIVA, junto con todo su historial de
+ * transacciones (cascade). No se puede deshacer — para lo reversible
+ * está toggleClienteActivo (deshabilitar).
+ */
+export async function eliminarCliente(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get("id") ?? "");
+  await prisma.cliente.delete({ where: { id } });
+  revalidatePath("/admin");
+  redirect("/admin");
 }

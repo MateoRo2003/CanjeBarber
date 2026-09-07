@@ -16,6 +16,25 @@ export default async function PerfilPage() {
   });
   if (!cliente) redirect("/");
 
+  if (!cliente.activo) {
+    return (
+      <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-4 px-6 py-16 text-center">
+        <h1 className="text-xl font-bold text-stone-900">
+          Cuenta deshabilitada
+        </h1>
+        <p className="text-sm text-stone-600">
+          Tu cuenta fue deshabilitada. Consultá con el barbero si creés que
+          es un error.
+        </p>
+        <form action={cerrarSesion}>
+          <button className="rounded-full bg-stone-900 px-6 py-3 text-sm font-medium text-white transition hover:opacity-90">
+            Cerrar sesión
+          </button>
+        </form>
+      </main>
+    );
+  }
+
   const premios = await prisma.premio.findMany({
     where: { activo: true },
     orderBy: { puntosCosto: "asc" },

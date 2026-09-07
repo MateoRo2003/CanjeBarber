@@ -14,6 +14,9 @@ export async function confirmarSuma(servicioId: string) {
     where: { id: session.user.clienteId },
   });
   if (!cliente) redirect("/");
+  if (!cliente.activo) {
+    throw new Error("Tu cuenta fue deshabilitada. Consultá con el barbero.");
+  }
 
   const servicio = await prisma.servicio.findUnique({
     where: { id: servicioId },

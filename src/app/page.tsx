@@ -8,10 +8,10 @@ import { rutaSegura } from "@/lib/safe-path";
 export default async function LandingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ callbackUrl?: string }>;
+  searchParams: Promise<{ callbackUrl?: string; error?: string }>;
 }) {
   const session = await auth();
-  const { callbackUrl } = await searchParams;
+  const { callbackUrl, error } = await searchParams;
   const destino = rutaSegura(callbackUrl);
 
   if (session?.user) {
@@ -33,7 +33,12 @@ export default async function LandingPage({
               Sumá puntos en cada corte y canjealos por descuentos, productos
               y cortes gratis. Sin turnos, sin vueltas.
             </p>
-            {destino && (
+            {error === "AccessDenied" && (
+              <p className="max-w-xs text-balance text-sm text-red-600">
+                Esta cuenta fue deshabilitada. Consultá con el barbero.
+              </p>
+            )}
+            {destino && error !== "AccessDenied" && (
               <p className="max-w-xs text-balance text-sm text-accent">
                 Iniciá sesión y volvés directo a donde estabas.
               </p>

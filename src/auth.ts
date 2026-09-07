@@ -74,8 +74,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: "/",
   },
   callbacks: {
+    // Acá se frena a un cliente deshabilitado por el admin, sea cual sea
+    // el provider con el que intente entrar (Google o teléfono) — el
+    // authorize() del provider ya validó la identidad, esto valida si
+    // esa cuenta tiene permitido usar la app.
     async signIn({ user, account }) {
-      if (account?.provider === "google" && !user.email) return false;
+      if (account?.provider === "google") {
+        if (!user.email) return false;
+        if (!esAdminEmail(user.email)) {
+          const cliente = await prisma.cliente.findUnique({
+            where: { email: user.email },
+          });
+          if (cliente && !cliente.activo) return false;
+        }
+      } else if (account?.provider === "telefono" && user.id) {
+        const cliente = await prisma.cliente.findUnique({
+          where: { id: user.id },
+        });
+        if (cliente && !cliente.activo) return false;
+      }
       return true;
     },
     // clienteId queda grabado en el token acá, sea cual sea el provider
@@ -123,6 +140,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           token.isAdmin = false;
         }
       }
+
+      // Se valida en CADA request (no solo al loguearse): si el token
+      // dice que hay un Cliente pero ya no existe (lo eliminó el admin,
+      // o cualquier otra baja de la fila), la sesión queda "fantasma" —
+      // isAdmin=false y clienteId apuntando a nada — y /perfil ↔ /
+      // entran en el mismo loop de redirects que las sesiones viejas de
+      // más arriba. Acá se corta invalidando la sesión directamente
+      // (retornar null hace que auth() devuelva sesión nula).
+      if (!token.isAdmin && token.clienteId) {
+        const existe = await prisma.cliente.findUnique({
+          where: { id: token.clienteId as string },
+          select: { id: true },
+        });
+        if (!existe) return null;
+      }
+
       return token;
     },
     async session({ session, token }) {

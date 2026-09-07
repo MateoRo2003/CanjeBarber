@@ -113,5 +113,5 @@ npm run dev
   foto del QR desde casa — el control real sigue siendo que el QR esté
   físicamente en el mostrador, igual que los de premios.
 - `/admin` — panel del admin: buscador de clientes, sumar puntos, actividad reciente (canjes + ajustes), gestión de servicios y premios, QRs.
-- `/admin/clientes/[id]` — ficha de un cliente: historial completo de transacciones y ajuste manual de puntos (+/-, con motivo).
+- `/admin/clientes/[id]` — ficha de un cliente: historial completo de transacciones, ajuste manual de puntos (+/-, con motivo), y "zona de riesgo" para deshabilitar/habilitar (reversible, bloquea login pero conserva todo) o eliminar (definitivo, borra también su historial — la base tiene `onDelete: Cascade` en `Transaccion.cliente`).
 - `/admin/reportes` — KPIs de uso (clientes, puntos en circulación, altas recientes, clientes sin actividad) y ranking de servicios/premios más usados.

@@ -30,6 +30,9 @@ export default async function SumarPage({
   ]);
 
   if (!cliente) redirect("/");
+  // /perfil ya muestra el mensaje de "cuenta deshabilitada" — evita
+  // duplicar ese texto acá.
+  if (!cliente.activo) redirect("/perfil");
 
   if (!servicio || !servicio.activo) {
     return (

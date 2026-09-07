@@ -29,6 +29,9 @@ export default async function CanjearPage({
   ]);
 
   if (!cliente) redirect("/");
+  // /perfil ya muestra el mensaje de "cuenta deshabilitada" — evita
+  // duplicar ese texto acá.
+  if (!cliente.activo) redirect("/perfil");
 
   if (!premio || !premio.activo) {
     return (

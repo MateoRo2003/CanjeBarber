@@ -38,7 +38,14 @@ export async function ClientesSection({ query }: { query: string }) {
             className="flex flex-col gap-2 rounded-xl border border-stone-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
           >
             <div>
-              <p className="font-medium">{cliente.nombre}</p>
+              <p className="font-medium">
+                {cliente.nombre}{" "}
+                {!cliente.activo && (
+                  <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
+                    Deshabilitado
+                  </span>
+                )}
+              </p>
               <p className="text-sm text-stone-500">
                 {[cliente.email, cliente.telefono].filter(Boolean).join(" · ")}
               </p>

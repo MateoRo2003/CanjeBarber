@@ -24,6 +24,9 @@ model Cliente {
   telefono       String?       @unique
   passwordHash   String?
   puntosActuales Int           @default(0)
+  // Deshabilitado por el admin: no puede iniciar sesión ni usar la app,
+  // pero conserva todo su historial (a diferencia de eliminarlo).
+  activo         Boolean       @default(true)
   fechaRegistro  DateTime      @default(now())
   transacciones  Transaccion[]
 
@@ -60,7 +63,9 @@ enum TipoTransaccion {
 
 model Transaccion {
   id            String          @id @default(cuid())
-  cliente       Cliente         @relation(fields: [clienteId], references: [id])
+  // onDelete: Cascade porque eliminar un cliente (a diferencia de
+  // deshabilitarlo) borra también todo su historial de transacciones.
+  cliente       Cliente         @relation(fields: [clienteId], references: [id], onDelete: Cascade)
   clienteId     String
   tipo          TipoTransaccion
   // id del Servicio si tipo=SUMA, id del Premio si tipo=CANJE,

@@ -37,6 +37,11 @@ export async function loginConTelefono(
     // también se implementa "tirando" un error especial de Next — hay
     // que dejar pasar cualquier cosa que no sea un error de Auth.js.
     if (error instanceof AuthError) {
+      if (error.type === "AccessDenied") {
+        return {
+          error: "Esta cuenta fue deshabilitada. Consultá con el barbero.",
+        };
+      }
       return { error: "Teléfono o contraseña incorrectos." };
     }
     throw error;
