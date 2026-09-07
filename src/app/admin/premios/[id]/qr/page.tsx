@@ -3,6 +3,7 @@ import QRCode from "qrcode";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { BotonImprimir } from "@/components/boton-imprimir";
+import { AvisoActividad } from "@/components/aviso-actividad";
 import { urlBase } from "@/lib/url-base";
 
 export default async function QrPremioPage({
@@ -27,6 +28,7 @@ export default async function QrPremioPage({
 
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col items-center gap-4 px-6 py-10 text-center print:py-4">
+      <AvisoActividad />
       <p className="text-sm text-stone-500 print:hidden">
         <a href="/admin" className="underline">
           ← Volver al panel
