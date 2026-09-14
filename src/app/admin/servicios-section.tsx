@@ -9,7 +9,7 @@ export async function ServiciosSection() {
   if (servicios.length === 0) {
     return (
       <p className="rounded-xl border border-dashed border-border-strong px-4 py-6 text-center text-sm text-muted-soft">
-        Todavía no cargaste ningún servicio.
+        Todavía no cargaste ningún beneficio.
       </p>
     );
   }

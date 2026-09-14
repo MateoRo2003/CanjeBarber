@@ -1,12 +1,13 @@
 import { prisma } from "@/lib/prisma";
 
-// Canjes y ajustes manuales — no incluye sumas normales por servicio para
-// no ensuciar la lista con lo rutinario; esto es lo que vale la pena que
-// el admin vea de un vistazo (incluye ajustes para poder auditarlos).
+// Canjes, ajustes y penalizaciones por inactividad — no incluye sumas
+// normales por beneficio para no ensuciar la lista con lo rutinario; esto
+// es lo que vale la pena que el admin vea de un vistazo (incluye ajustes
+// y penalizaciones para poder auditarlos).
 export async function CanjesSection() {
   const [transacciones, premios] = await Promise.all([
     prisma.transaccion.findMany({
-      where: { tipo: { in: ["CANJE", "AJUSTE"] } },
+      where: { tipo: { in: ["CANJE", "AJUSTE", "PENALIZACION"] } },
       orderBy: { fecha: "desc" },
       take: 15,
       include: { cliente: true },
@@ -33,9 +34,12 @@ export async function CanjesSection() {
         >
           <span>
             <strong>{t.cliente.nombre}</strong>{" "}
-            {t.tipo === "CANJE"
-              ? `canjeó ${premiosPorId.get(t.referenciaId)?.nombre ?? "premio eliminado"}`
-              : `ajuste manual: ${t.puntos >= 0 ? "+" : ""}${t.puntos} pts (${t.nota})`}
+            {t.tipo === "CANJE" &&
+              `canjeó ${premiosPorId.get(t.referenciaId)?.nombre ?? "premio eliminado"}`}
+            {t.tipo === "AJUSTE" &&
+              `ajuste manual: ${t.puntos >= 0 ? "+" : ""}${t.puntos} pts (${t.nota})`}
+            {t.tipo === "PENALIZACION" &&
+              `descuento por inactividad: ${t.puntos} pts (${t.nota})`}
           </span>
           <span className="shrink-0 text-muted-soft">
             {new Date(t.fecha).toLocaleString("es-AR")}

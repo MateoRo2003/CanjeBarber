@@ -45,6 +45,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               nombre,
               telefono,
               passwordHash: hashPassword(password),
+              ultimoLogin: new Date(),
             },
           });
           cliente = await otorgarBonusBienvenida(cliente);
@@ -53,13 +54,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           !verifyPassword(password, cliente.passwordHash)
         ) {
           return null;
-        } else if (nombre && cliente.nombre === cliente.telefono) {
-          // Cuenta creada antes de pedir nombre (quedó con el teléfono
-          // como "nombre" de placeholder) — se corrige sola apenas la
-          // persona vuelve a loguearse con un nombre real cargado.
+        } else {
+          // Login válido de una cuenta que ya existía: se registra como
+          // actividad (la usa el descuento por inactividad, ver
+          // src/lib/inactividad.ts) y, si hacía falta, se corrige el
+          // nombre placeholder de una cuenta creada antes de pedir nombre
+          // (quedó con el teléfono como "nombre").
           cliente = await prisma.cliente.update({
             where: { id: cliente.id },
-            data: { nombre },
+            data: {
+              ultimoLogin: new Date(),
+              ...(nombre && cliente.nombre === cliente.telefono
+                ? { nombre }
+                : {}),
+            },
           });
         }
 
@@ -119,6 +127,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               data: {
                 nombre: user.name ?? undefined,
                 googleId: account.providerAccountId,
+                ultimoLogin: new Date(),
               },
             });
           } else {
@@ -127,6 +136,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 nombre: user.name ?? "",
                 email: user.email,
                 googleId: account.providerAccountId,
+                ultimoLogin: new Date(),
               },
             });
             cliente = await otorgarBonusBienvenida(cliente);

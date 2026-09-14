@@ -48,7 +48,7 @@ export default async function ReportesPage() {
 
   const rankingServicios = otorgadoPorServicio
     .map((row) => ({
-      nombre: nombreServicio.get(row.referenciaId) ?? "servicio eliminado",
+      nombre: nombreServicio.get(row.referenciaId) ?? "beneficio eliminado",
       veces: row._count._all,
       puntos: row._sum.puntos ?? 0,
     }))
@@ -95,11 +95,11 @@ export default async function ReportesPage() {
 
       <section className="flex flex-col gap-3">
         <h2 className="font-semibold text-foreground">
-          Servicios más usados
+          Beneficios más usados
         </h2>
         {rankingServicios.length === 0 ? (
           <p className="text-sm text-muted-soft">
-            Todavía no hay puntos sumados por ningún servicio.
+            Todavía no hay puntos sumados por ningún beneficio.
           </p>
         ) : (
           <ul className="flex flex-col gap-2">

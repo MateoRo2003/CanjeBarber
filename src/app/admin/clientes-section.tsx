@@ -82,7 +82,7 @@ export async function ClientesSection({ query }: { query: string }) {
               </form>
             ) : (
               <p className="text-xs text-muted-faint">
-                Cargá un servicio activo para poder sumar puntos.
+                Cargá un beneficio activo para poder sumar puntos.
               </p>
             )}
           </li>

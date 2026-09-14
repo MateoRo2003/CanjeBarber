@@ -28,6 +28,10 @@ model Cliente {
   // pero conserva todo su historial (a diferencia de eliminarlo).
   activo         Boolean       @default(true)
   fechaRegistro  DateTime      @default(now())
+  // Último login exitoso (Google o teléfono), sea alta nueva o vuelta de
+  // un cliente ya existente. Lo usa el descuento por inactividad (ver
+  // Configuracion) cuando "login" es una de las condiciones marcadas.
+  ultimoLogin    DateTime?
   transacciones  Transaccion[]
 
   @@map("clientes")
@@ -62,6 +66,9 @@ enum TipoTransaccion {
   // Bono automático por primer login / registro (ver modelo
   // Configuracion). Se otorga una sola vez, al crear el Cliente.
   BONUS
+  // Descuento automático por inactividad (ver Configuracion). Progresivo:
+  // se repite cada vez que pasa otro período completo sin actividad.
+  PENALIZACION
 }
 
 model Transaccion {
@@ -72,10 +79,12 @@ model Transaccion {
   clienteId     String
   tipo          TipoTransaccion
   // id del Servicio si tipo=SUMA, id del Premio si tipo=CANJE,
-  // "manual" si tipo=AJUSTE, "bienvenida" si tipo=BONUS.
+  // "manual" si tipo=AJUSTE, "bienvenida" si tipo=BONUS,
+  // "inactividad" si tipo=PENALIZACION.
   referenciaId  String
   puntos        Int
-  // Motivo del ajuste manual (solo aplica si tipo=AJUSTE).
+  // Motivo del ajuste manual (solo aplica si tipo=AJUSTE); para
+  // PENALIZACION guarda cuántos días de inactividad la dispararon.
   nota          String?
   fecha         DateTime        @default(now())
 
@@ -83,9 +92,9 @@ model Transaccion {
   @@map("transacciones")
 }
 
-// Configuración global de la app (fila única, id fijo "config"). Por ahora
-// solo el bono de bienvenida, pero deja lugar para sumar más ajustes a
-// futuro sin tener que crear una tabla por cada uno.
+// Configuración global de la app (fila única, id fijo "config"). Cada
+// funcionalidad configurable suma sus propios campos acá en vez de tener
+// una tabla por cada una.
 model Configuracion {
   id                String   @id @default("config")
   // Si está activo, todo Cliente NUEVO (primer login con Google o primer
@@ -93,6 +102,21 @@ model Configuracion {
   // se vuelve a otorgar en logins siguientes.
   bienvenidaActiva  Boolean  @default(false)
   puntosBienvenida  Int      @default(0)
+
+  // Descuento progresivo de puntos por inactividad (ver
+  // src/lib/inactividad.ts). Un Cliente está "inactivo" cuando pasaron
+  // inactividadDias sin ninguna de las señales marcadas como actividad
+  // acá abajo — y mientras siga así, se le vuelve a descontar cada vez
+  // que pasa otro período igual (por eso "progresivo").
+  inactividadActiva          Boolean @default(false)
+  inactividadDias            Int     @default(30)
+  inactividadPuntos          Int     @default(0)
+  // Qué cuenta como "seguir activo". Al menos una tiene que estar
+  // marcada para poder activar inactividadActiva.
+  inactividadConsideraLogin  Boolean @default(true)
+  inactividadConsideraCanje  Boolean @default(true)
+  inactividadConsideraSuma   Boolean @default(true)
+
   actualizadoEn     DateTime @updatedAt
 
   @@map("configuracion")

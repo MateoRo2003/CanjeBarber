@@ -4,6 +4,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
+import {
+  aplicarPenalizacionesInactividad,
+  type ResultadoInactividad,
+} from "@/lib/inactividad";
 
 export async function sumarPuntos(formData: FormData) {
   await requireAdmin();
@@ -16,7 +20,7 @@ export async function sumarPuntos(formData: FormData) {
     where: { id: servicioId },
   });
   if (!servicio || !servicio.activo) {
-    throw new Error("Servicio inválido.");
+    throw new Error("Beneficio inválido.");
   }
 
   await prisma.$transaction([
@@ -43,7 +47,7 @@ export async function crearServicio(formData: FormData) {
   const nombre = String(formData.get("nombre") ?? "").trim();
   const puntos = Number(formData.get("puntosOtorgados"));
   if (!nombre || !Number.isFinite(puntos) || puntos <= 0) {
-    throw new Error("Datos de servicio inválidos.");
+    throw new Error("Datos de beneficio inválidos.");
   }
 
   await prisma.servicio.create({
@@ -96,7 +100,7 @@ export async function editarServicio(formData: FormData) {
   const nombre = String(formData.get("nombre") ?? "").trim();
   const puntos = Number(formData.get("puntosOtorgados"));
   if (!id || !nombre || !Number.isFinite(puntos) || puntos <= 0) {
-    throw new Error("Datos de servicio inválidos.");
+    throw new Error("Datos de beneficio inválidos.");
   }
 
   await prisma.servicio.update({
@@ -139,7 +143,7 @@ export async function eliminarPremio(formData: FormData) {
 
 /**
  * Ajuste manual de puntos (corrección, cortesía, descuento por error,
- * etc.), sin pasar por un servicio o premio. `delta` puede ser positivo
+ * etc.), sin pasar por un beneficio o premio. `delta` puede ser positivo
  * (suma) o negativo (resta) — nunca se permite que el saldo quede
  * negativo.
  */
@@ -210,6 +214,71 @@ export async function guardarBonusBienvenida(formData: FormData) {
   });
 
   revalidatePath("/admin");
+}
+
+/**
+ * Prende/apaga y ajusta el descuento progresivo por inactividad (ver
+ * src/lib/inactividad.ts). El admin elige el período, cuántos puntos se
+ * descuentan cada vez, y qué cuenta como "seguir activo" — necesita al
+ * menos una condición marcada para poder activarse.
+ */
+export async function guardarConfigInactividad(formData: FormData) {
+  await requireAdmin();
+
+  const activo = formData.get("activo") === "on";
+  const dias = Number(formData.get("dias"));
+  const puntos = Number(formData.get("puntos"));
+  const consideraLogin = formData.get("consideraLogin") === "on";
+  const consideraCanje = formData.get("consideraCanje") === "on";
+  const consideraSuma = formData.get("consideraSuma") === "on";
+
+  if (!Number.isFinite(dias) || !Number.isInteger(dias) || dias <= 0) {
+    throw new Error("Ingresá una cantidad de días válida (mayor a 0).");
+  }
+  if (!Number.isFinite(puntos) || !Number.isInteger(puntos) || puntos < 0) {
+    throw new Error("Ingresá una cantidad de puntos válida (0 o más).");
+  }
+  if (activo && !consideraLogin && !consideraCanje && !consideraSuma) {
+    throw new Error(
+      "Marcá al menos una condición que cuente como actividad.",
+    );
+  }
+
+  await prisma.configuracion.upsert({
+    where: { id: "config" },
+    update: {
+      inactividadActiva: activo,
+      inactividadDias: dias,
+      inactividadPuntos: puntos,
+      inactividadConsideraLogin: consideraLogin,
+      inactividadConsideraCanje: consideraCanje,
+      inactividadConsideraSuma: consideraSuma,
+    },
+    create: {
+      id: "config",
+      inactividadActiva: activo,
+      inactividadDias: dias,
+      inactividadPuntos: puntos,
+      inactividadConsideraLogin: consideraLogin,
+      inactividadConsideraCanje: consideraCanje,
+      inactividadConsideraSuma: consideraSuma,
+    },
+  });
+
+  revalidatePath("/admin");
+}
+
+/**
+ * Corre la revisión de inactividad ahora mismo, sin esperar al cron
+ * diario (ver vercel.json + src/app/api/cron/inactividad/route.ts). Sirve
+ * para probar la configuración antes de confiar en que el cron la corra
+ * solo, y como respaldo manual si por algo el cron no llegó a correr.
+ */
+export async function ejecutarPenalizacionInactividadAhora(): Promise<ResultadoInactividad> {
+  await requireAdmin();
+  const resultado = await aplicarPenalizacionesInactividad();
+  revalidatePath("/admin");
+  return resultado;
 }
 
 /**

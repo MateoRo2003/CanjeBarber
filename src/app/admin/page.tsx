@@ -11,6 +11,7 @@ import { CanjesSection } from "./canjes-section";
 import { ServiciosSection } from "./servicios-section";
 import { PremiosSection } from "./premios-section";
 import { ConfiguracionSection } from "./configuracion-section";
+import { InactividadSection } from "./inactividad-section";
 
 export default async function AdminPage({
   searchParams,
@@ -58,6 +59,9 @@ export default async function AdminPage({
         <Suspense fallback={<SkeletonLista filas={1} />}>
           <ConfiguracionSection />
         </Suspense>
+        <Suspense fallback={<SkeletonLista filas={1} />}>
+          <InactividadSection />
+        </Suspense>
       </section>
 
       {/* Buscador de clientes + sumar puntos */}
@@ -88,9 +92,9 @@ export default async function AdminPage({
         </Suspense>
       </section>
 
-      {/* Gestión de servicios */}
+      {/* Gestión de beneficios */}
       <section className="flex flex-col gap-3">
-        <h2 className="font-semibold">Servicios</h2>
+        <h2 className="font-semibold">Beneficios</h2>
         <form
           action={crearServicio}
           className="flex flex-wrap items-end gap-2"

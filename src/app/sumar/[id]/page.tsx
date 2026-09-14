@@ -36,9 +36,9 @@ export default async function SumarPage({
 
   if (!servicio || !servicio.activo) {
     return (
-      <MensajeCentral icono={Ban} titulo="Servicio no disponible">
+      <MensajeCentral icono={Ban} titulo="Beneficio no disponible">
         <p className="text-muted">
-          Este servicio no existe o ya no está activo.
+          Este beneficio no existe o ya no está activo.
         </p>
         <VolverAlPerfil />
       </MensajeCentral>
@@ -58,7 +58,7 @@ export default async function SumarPage({
     return (
       <MensajeCentral icono={Clock} titulo={servicio.nombre}>
         <p className="text-muted">
-          Ya sumaste puntos por este servicio hoy. Podés volver a sumar
+          Ya sumaste puntos por este beneficio hoy. Podés volver a sumar
           mañana.
         </p>
         <VolverAlPerfil />

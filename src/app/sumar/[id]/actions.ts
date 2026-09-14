@@ -22,11 +22,11 @@ export async function confirmarSuma(servicioId: string) {
     where: { id: servicioId },
   });
   if (!servicio || !servicio.activo) {
-    throw new Error("Este servicio ya no está disponible.");
+    throw new Error("Este beneficio ya no está disponible.");
   }
 
   await prisma.$transaction(async (tx) => {
-    // Un mismo cliente no puede sumar el mismo servicio más de una vez
+    // Un mismo cliente no puede sumar el mismo beneficio más de una vez
     // por día (evita que reutilice una foto del QR desde su casa). Se
     // revalida acá adentro, ya con lock de transacción, para que dos
     // escaneos casi simultáneos no se cuelen los dos.

@@ -1,5 +1,6 @@
 import {
   Gift,
+  Moon,
   PlusCircle,
   SlidersHorizontal,
   Sparkles,
@@ -20,6 +21,7 @@ const ESTILO_MOVIMIENTO: Record<
   CANJE: { icono: Gift, clase: "bg-primary/10 text-primary" },
   BONUS: { icono: Sparkles, clase: "bg-reseda/20 text-moss" },
   AJUSTE: { icono: SlidersHorizontal, clase: "bg-surface-muted text-muted" },
+  PENALIZACION: { icono: Moon, clase: "bg-danger-surface text-danger" },
 };
 
 // Etiquetas en primera persona (vos) para lo que ve el cliente final —
@@ -63,7 +65,8 @@ export default async function HistorialPage() {
       <header className="flex flex-col gap-1">
         <h1 className="text-xl font-bold text-foreground">Tu historial</h1>
         <p className="text-sm text-muted-soft">
-          Todo lo que sumaste, te dieron y canjeaste hasta ahora.
+          Todo lo que sumaste, te dieron, canjeaste o te descontaron hasta
+          ahora.
         </p>
       </header>
 
@@ -88,12 +91,14 @@ export default async function HistorialPage() {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-foreground">
                     {t.tipo === "SUMA" &&
-                      `Sumaste puntos · ${nombresPorId.get(t.referenciaId) ?? "servicio"}`}
+                      `Sumaste puntos · ${nombresPorId.get(t.referenciaId) ?? "beneficio"}`}
                     {t.tipo === "CANJE" &&
                       `Canjeaste · ${nombresPorId.get(t.referenciaId) ?? "premio"}`}
                     {t.tipo === "BONUS" && "Bono de bienvenida"}
                     {t.tipo === "AJUSTE" &&
                       (t.nota ? `Ajuste: ${t.nota}` : "Ajuste de puntos")}
+                    {t.tipo === "PENALIZACION" &&
+                      `Descuento por inactividad${t.nota ? ` · ${t.nota}` : ""}`}
                   </p>
                   <p className="text-xs text-muted-faint">
                     {new Date(t.fecha).toLocaleString("es-AR")}

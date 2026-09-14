@@ -68,6 +68,10 @@ export default async function ClienteDetallePage({
         <p className="text-xs text-muted-faint">
           Cliente desde{" "}
           {new Date(cliente.fechaRegistro).toLocaleDateString("es-AR")}
+          {" · "}
+          {cliente.ultimoLogin
+            ? `Último login: ${new Date(cliente.ultimoLogin).toLocaleString("es-AR")}`
+            : "Nunca volvió a iniciar sesión"}
         </p>
       </header>
 
@@ -86,7 +90,7 @@ export default async function ClienteDetallePage({
         <h2 className="font-semibold text-foreground">Ajustar puntos</h2>
         <p className="text-xs text-muted-soft">
           Para correcciones o cortesías puntuales — no reemplaza sumar por
-          servicio. Un número negativo resta puntos.
+          beneficio. Un número negativo resta puntos.
         </p>
         <form action={ajustarPuntos} className="flex flex-wrap items-end gap-2">
           <input type="hidden" name="clienteId" value={cliente.id} />
@@ -145,11 +149,13 @@ export default async function ClienteDetallePage({
                 </span>{" "}
                 <span className="text-muted">
                   {t.tipo === "SUMA" &&
-                    `sumó por ${nombresPorId.get(t.referenciaId) ?? "servicio eliminado"}`}
+                    `sumó por ${nombresPorId.get(t.referenciaId) ?? "beneficio eliminado"}`}
                   {t.tipo === "CANJE" &&
                     `canjeó ${nombresPorId.get(t.referenciaId) ?? "premio eliminado"}`}
                   {t.tipo === "AJUSTE" && `ajuste manual: ${t.nota}`}
                   {t.tipo === "BONUS" && "bono de bienvenida"}
+                  {t.tipo === "PENALIZACION" &&
+                    `descuento por inactividad (${t.nota})`}
                 </span>
               </div>
               <span className="shrink-0 text-muted-soft">
