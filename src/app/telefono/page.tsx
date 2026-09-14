@@ -20,10 +20,10 @@ export default async function TelefonoPage({
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-8 px-6 py-16 text-center">
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold text-stone-900">
+        <h1 className="text-2xl font-bold text-foreground">
           Entrar con tu teléfono
         </h1>
-        <p className="max-w-xs text-balance text-sm text-stone-600">
+        <p className="max-w-xs text-balance text-sm text-muted">
           Alternativa a Google: usá tu número y una contraseña que elijas
           vos.
         </p>
@@ -33,7 +33,7 @@ export default async function TelefonoPage({
 
       <Link
         href={destino ? `/?callbackUrl=${encodeURIComponent(destino)}` : "/"}
-        className="text-sm text-stone-500 underline underline-offset-2 hover:text-stone-700"
+        className="text-sm text-muted-soft underline underline-offset-2 hover:text-foreground"
       >
         Volver a iniciar sesión con Google
       </Link>

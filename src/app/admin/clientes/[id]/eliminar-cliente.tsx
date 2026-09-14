@@ -18,7 +18,7 @@ export function EliminarCliente({
       <button
         type="button"
         onClick={() => setConfirmando(true)}
-        className="rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
+        className="rounded-lg border border-danger-border px-4 py-2 text-sm font-medium text-danger transition hover:bg-danger-surface"
       >
         Eliminar cliente
       </button>
@@ -26,8 +26,8 @@ export function EliminarCliente({
   }
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-red-300 bg-red-50 p-3">
-      <p className="text-sm text-red-700">
+    <div className="flex flex-col gap-2 rounded-lg border border-danger-border bg-danger-surface p-3">
+      <p className="text-sm text-danger">
         ¿Eliminar a <strong>{clienteNombre}</strong> definitivamente? Se
         borra junto con todo su historial de puntos y transacciones — no se
         puede deshacer. Si solo querés que no pueda usar la app, usá
@@ -38,7 +38,7 @@ export function EliminarCliente({
           <input type="hidden" name="id" value={clienteId} />
           <BotonSubmit
             pendingText="Eliminando…"
-            className="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-red-700"
+            className="rounded-lg bg-danger px-3 py-1.5 text-sm font-medium text-white transition hover:bg-danger-hover"
           >
             Sí, eliminar definitivamente
           </BotonSubmit>
@@ -46,7 +46,7 @@ export function EliminarCliente({
         <button
           type="button"
           onClick={() => setConfirmando(false)}
-          className="rounded-lg px-3 py-1.5 text-sm text-stone-600 transition hover:bg-stone-100"
+          className="rounded-lg px-3 py-1.5 text-sm text-muted transition hover:bg-surface-muted"
         >
           Cancelar
         </button>

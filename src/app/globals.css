@@ -1,22 +1,135 @@
 @import "tailwindcss";
 
+/* ══════════════════════════════════════════════════════════════════
+   Paleta de la barbería (la que eligió el cliente)
+
+   Reseda Green   #6E8649   Fern Green  #477023   Dark Moss  #2D531A
+   Pakistan Green #0D330E   Dark Green  #071E07
+
+   Los 5 colores de arriba son los "crudos". Todo lo demás son tokens
+   semánticos derivados de ellos: los claros son tintes verdosos (no
+   grises neutros) para que la paleta se sienta en TODA la pantalla,
+   incluso en los fondos. Cambiar la marca = tocar solo este archivo.
+   ══════════════════════════════════════════════════════════════════ */
+
 :root {
-  --background: #fafaf9; /* stone-50: cálido, no gris frío */
-  --foreground: #1c1917; /* stone-900 */
-  --accent: #b45309; /* amber-700: dorado clásico de barbería */
-  --accent-foreground: #fffbeb;
+  /* Paleta cruda */
+  --reseda: #6e8649;
+  --fern: #477023;
+  --moss: #2d531a;
+  --pakistan: #0d330e;
+  --forest: #071e07;
+
+  /* Superficies claras */
+  --background: #f4f7ef;
+  --surface: #ffffff;
+  --surface-muted: #e9efdf; /* chips, botones apagados, hovers */
+
+  /* Bordes */
+  --border: #dae3ca;
+  --border-strong: #c0cfa8; /* inputs, bordes punteados */
+
+  /* Texto sobre claro (contraste AA sobre --background) */
+  --foreground: #10220f; /* títulos y énfasis · 15.4:1 */
+  --muted: #48563f; /* texto secundario  ·  7.2:1 */
+  --muted-soft: #5f6f55; /* labels, captions  ·  5.0:1 */
+  --muted-faint: #6b7a61; /* fechas, ayudas    ·  4.6:1 sobre tarjeta */
+
+  /* Superficies oscuras y su texto */
+  --surface-dark: #0d330e;
+  --surface-darkest: #071e07;
+  --on-dark: #f1f8e6; /* texto principal sobre verde · 12.8:1 */
+  --on-dark-muted: #9fb187; /* texto secundario sobre verde ·  6.1:1 */
+
+  /* Acciones */
+  --accent: #477023; /* Fern: CTA del cliente (canjear/sumar) */
+  --accent-hover: #3a5c1c;
+  --accent-foreground: #f3f8ea;
+  --primary: #0d330e; /* Pakistan: botones del panel admin */
+  --primary-hover: #2d531a; /* Dark Moss */
+  --primary-foreground: #f1f8e6;
+
+  /* Peligro / restas. Único color fuera de la paleta: hace falta algo
+     cálido para que "eliminar" y "-30 pts" no se confundan con el verde
+     de "todo bien". Terracota, que es complementario del verde. */
+  --danger: #9a3a1e;
+  --danger-hover: #7e2f17;
+  --danger-surface: #fdf1ec;
+  --danger-border: #eed3c6;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-dark: var(--surface-dark);
+  --color-surface-darkest: var(--surface-darkest);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-soft: var(--muted-soft);
+  --color-muted-faint: var(--muted-faint);
+
+  --color-on-dark: var(--on-dark);
+  --color-on-dark-muted: var(--on-dark-muted);
+
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
   --color-accent-foreground: var(--accent-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
+  --color-danger-surface: var(--danger-surface);
+  --color-danger-border: var(--danger-border);
+
+  /* Los 5 colores crudos, por si hace falta uno puntual (halos, rings,
+     sombras) que no encaje en ningún token semántico. */
+  --color-reseda: var(--reseda);
+  --color-fern: var(--fern);
+  --color-moss: var(--moss);
+  --color-pakistan: var(--pakistan);
+  --color-forest: var(--forest);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  /* La app es solo clara: sin esto, los controles nativos (checkbox,
+     select, inputs de número) se pintan oscuros si el celular está en
+     modo oscuro y quedan ilegibles sobre las tarjetas blancas. */
+  color-scheme: light;
+  /* Tiñe de verde los controles nativos (checkbox del panel, caret). */
+  accent-color: var(--accent);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/* Placeholders en el verde apagado del tema (si no, quedan del gris del
+   navegador, que desentona con el resto). */
+::placeholder {
+  color: var(--muted-faint);
+  opacity: 1;
+}
+
+/* Foco visible y on-brand para quien navega con teclado. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Los QR se imprimen en papel: fondo blanco liso, sin el tinte verde. */
+@media print {
+  body {
+    background: #ffffff;
+  }
 }

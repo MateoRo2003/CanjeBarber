@@ -2,7 +2,7 @@
 export function Skeleton({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`animate-pulse rounded-md bg-stone-200 ${className}`}
+      className={`animate-pulse rounded-md bg-border ${className}`}
       aria-hidden
     />
   );
@@ -10,7 +10,7 @@ export function Skeleton({ className = "" }: { className?: string }) {
 
 export function SkeletonFila() {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-xl border border-stone-200 bg-white p-4">
+    <div className="flex items-center justify-between gap-3 rounded-xl border border-border bg-surface p-4">
       <div className="flex flex-col gap-2">
         <Skeleton className="h-4 w-32" />
         <Skeleton className="h-3 w-40" />

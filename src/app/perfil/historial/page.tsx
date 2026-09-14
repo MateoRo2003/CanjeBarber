@@ -1,6 +1,26 @@
+import {
+  Gift,
+  PlusCircle,
+  SlidersHorizontal,
+  Sparkles,
+  type LucideIcon,
+} from "lucide-react";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import type { TipoTransaccion } from "@/generated/prisma/enums";
+
+// Cada tipo de movimiento con su ícono y su verde de la paleta, para que
+// el historial se lea de un vistazo sin tener que leer texto.
+const ESTILO_MOVIMIENTO: Record<
+  TipoTransaccion,
+  { icono: LucideIcon; clase: string }
+> = {
+  SUMA: { icono: PlusCircle, clase: "bg-accent/12 text-accent" },
+  CANJE: { icono: Gift, clase: "bg-primary/10 text-primary" },
+  BONUS: { icono: Sparkles, clase: "bg-reseda/20 text-moss" },
+  AJUSTE: { icono: SlidersHorizontal, clase: "bg-surface-muted text-muted" },
+};
 
 // Etiquetas en primera persona (vos) para lo que ve el cliente final —
 // distinto del historial de /admin/clientes/[id], que habla del cliente
@@ -35,53 +55,61 @@ export default async function HistorialPage() {
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-6 py-10">
       <a
         href="/perfil"
-        className="text-sm text-stone-500 underline underline-offset-2 transition hover:text-stone-700"
+        className="text-sm text-muted-soft underline underline-offset-2 transition hover:text-foreground"
       >
         ← Volver
       </a>
 
       <header className="flex flex-col gap-1">
-        <h1 className="text-xl font-bold text-stone-900">Tu historial</h1>
-        <p className="text-sm text-stone-500">
+        <h1 className="text-xl font-bold text-foreground">Tu historial</h1>
+        <p className="text-sm text-muted-soft">
           Todo lo que sumaste, te dieron y canjeaste hasta ahora.
         </p>
       </header>
 
       {transacciones.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-stone-300 px-4 py-6 text-center text-sm text-stone-500">
+        <p className="rounded-xl border border-dashed border-border-strong px-4 py-6 text-center text-sm text-muted-soft">
           Todavía no tenés movimientos. Sumá puntos en tu próxima visita.
         </p>
       ) : (
         <ul className="flex flex-col gap-2">
-          {transacciones.map((t) => (
-            <li
-              key={t.id}
-              className="flex items-center justify-between gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 shadow-sm"
-            >
-              <div>
-                <p className="text-sm font-medium text-stone-900">
-                  {t.tipo === "SUMA" &&
-                    `Sumaste puntos · ${nombresPorId.get(t.referenciaId) ?? "servicio"}`}
-                  {t.tipo === "CANJE" &&
-                    `Canjeaste · ${nombresPorId.get(t.referenciaId) ?? "premio"}`}
-                  {t.tipo === "BONUS" && "Bono de bienvenida"}
-                  {t.tipo === "AJUSTE" &&
-                    (t.nota ? `Ajuste: ${t.nota}` : "Ajuste de puntos")}
-                </p>
-                <p className="text-xs text-stone-400">
-                  {new Date(t.fecha).toLocaleString("es-AR")}
-                </p>
-              </div>
-              <span
-                className={`shrink-0 font-semibold tabular-nums ${
-                  t.puntos >= 0 ? "text-green-700" : "text-red-700"
-                }`}
+          {transacciones.map((t) => {
+            const { icono: Icono, clase } = ESTILO_MOVIMIENTO[t.tipo];
+            return (
+              <li
+                key={t.id}
+                className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 shadow-sm"
               >
-                {t.puntos >= 0 ? "+" : ""}
-                {t.puntos}
-              </span>
-            </li>
-          ))}
+                <div
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${clase}`}
+                >
+                  <Icono className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-foreground">
+                    {t.tipo === "SUMA" &&
+                      `Sumaste puntos · ${nombresPorId.get(t.referenciaId) ?? "servicio"}`}
+                    {t.tipo === "CANJE" &&
+                      `Canjeaste · ${nombresPorId.get(t.referenciaId) ?? "premio"}`}
+                    {t.tipo === "BONUS" && "Bono de bienvenida"}
+                    {t.tipo === "AJUSTE" &&
+                      (t.nota ? `Ajuste: ${t.nota}` : "Ajuste de puntos")}
+                  </p>
+                  <p className="text-xs text-muted-faint">
+                    {new Date(t.fecha).toLocaleString("es-AR")}
+                  </p>
+                </div>
+                <span
+                  className={`shrink-0 font-semibold tabular-nums ${
+                    t.puntos >= 0 ? "text-accent" : "text-danger"
+                  }`}
+                >
+                  {t.puntos >= 0 ? "+" : ""}
+                  {t.puntos}
+                </span>
+              </li>
+            );
+          })}
         </ul>
       )}
     </main>

@@ -11,7 +11,7 @@ export function ServicioRow({ servicio }: { servicio: Servicio }) {
 
   if (modo === "editar") {
     return (
-      <li className="rounded-lg border border-stone-300 bg-white p-3">
+      <li className="rounded-lg border border-border-strong bg-surface p-3">
         <form
           action={async (formData) => {
             await editarServicio(formData);
@@ -21,23 +21,23 @@ export function ServicioRow({ servicio }: { servicio: Servicio }) {
         >
           <input type="hidden" name="id" value={servicio.id} />
           <div className="flex flex-col">
-            <label className="text-xs text-stone-500">Nombre</label>
+            <label className="text-xs text-muted-soft">Nombre</label>
             <input
               name="nombre"
               defaultValue={servicio.nombre}
               required
-              className="rounded-lg border border-stone-300 px-3 py-2 text-sm"
+              className="rounded-lg border border-border-strong px-3 py-2 text-sm"
             />
           </div>
           <div className="flex flex-col">
-            <label className="text-xs text-stone-500">Puntos</label>
+            <label className="text-xs text-muted-soft">Puntos</label>
             <input
               name="puntosOtorgados"
               type="number"
               min={1}
               defaultValue={servicio.puntosOtorgados}
               required
-              className="w-24 rounded-lg border border-stone-300 px-3 py-2 text-sm"
+              className="w-24 rounded-lg border border-border-strong px-3 py-2 text-sm"
             />
           </div>
           <BotonSubmit
@@ -49,7 +49,7 @@ export function ServicioRow({ servicio }: { servicio: Servicio }) {
           <button
             type="button"
             onClick={() => setModo("ver")}
-            className="rounded-lg px-3 py-2 text-sm text-stone-500 transition hover:bg-stone-100"
+            className="rounded-lg px-3 py-2 text-sm text-muted-soft transition hover:bg-surface-muted"
           >
             Cancelar
           </button>
@@ -60,7 +60,7 @@ export function ServicioRow({ servicio }: { servicio: Servicio }) {
 
   if (modo === "eliminar") {
     return (
-      <li className="flex items-center justify-between gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm">
+      <li className="flex items-center justify-between gap-2 rounded-lg border border-danger-border bg-danger-surface px-4 py-2 text-sm">
         <span>
           ¿Eliminar <strong>{servicio.nombre}</strong>? No se puede deshacer.
         </span>
@@ -69,7 +69,7 @@ export function ServicioRow({ servicio }: { servicio: Servicio }) {
             <input type="hidden" name="id" value={servicio.id} />
             <BotonSubmit
               pendingText="Eliminando…"
-              className="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-red-700"
+              className="rounded-lg bg-danger px-3 py-1.5 text-sm font-medium text-white transition hover:bg-danger-hover"
             >
               Sí, eliminar
             </BotonSubmit>
@@ -77,7 +77,7 @@ export function ServicioRow({ servicio }: { servicio: Servicio }) {
           <button
             type="button"
             onClick={() => setModo("ver")}
-            className="rounded-lg p-1.5 text-stone-500 transition hover:bg-stone-200"
+            className="rounded-lg p-1.5 text-muted-soft transition hover:bg-surface-muted"
             aria-label="Cancelar"
           >
             <X className="h-4 w-4" />
@@ -88,12 +88,12 @@ export function ServicioRow({ servicio }: { servicio: Servicio }) {
   }
 
   return (
-    <li className="flex flex-col gap-1 rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm">
+    <li className="flex flex-col gap-1 rounded-lg border border-border bg-surface px-4 py-2 text-sm">
       <div className="flex items-center justify-between gap-2">
         <span>
           {servicio.nombre} · {servicio.puntosOtorgados} pts{" "}
           {!servicio.activo && (
-            <span className="text-stone-400">(inactivo)</span>
+            <span className="text-muted-faint">(inactivo)</span>
           )}
         </span>
         <div className="flex items-center gap-1">
@@ -101,7 +101,7 @@ export function ServicioRow({ servicio }: { servicio: Servicio }) {
             <input type="hidden" name="id" value={servicio.id} />
             <BotonSubmit
               pendingText="…"
-              className="rounded-lg px-2 py-1.5 text-xs text-stone-600 underline underline-offset-2 transition hover:bg-stone-100"
+              className="rounded-lg px-2 py-1.5 text-xs text-muted underline underline-offset-2 transition hover:bg-surface-muted"
             >
               {servicio.activo ? "Desactivar" : "Activar"}
             </BotonSubmit>
@@ -109,7 +109,7 @@ export function ServicioRow({ servicio }: { servicio: Servicio }) {
           <button
             type="button"
             onClick={() => setModo("editar")}
-            className="rounded-lg p-1.5 text-stone-500 transition hover:bg-stone-100 hover:text-stone-700"
+            className="rounded-lg p-1.5 text-muted-soft transition hover:bg-surface-muted hover:text-foreground"
             aria-label="Editar"
           >
             <Pencil className="h-4 w-4" />
@@ -117,7 +117,7 @@ export function ServicioRow({ servicio }: { servicio: Servicio }) {
           <button
             type="button"
             onClick={() => setModo("eliminar")}
-            className="rounded-lg p-1.5 text-stone-500 transition hover:bg-red-50 hover:text-red-600"
+            className="rounded-lg p-1.5 text-muted-soft transition hover:bg-danger-surface hover:text-danger"
             aria-label="Eliminar"
           >
             <Trash2 className="h-4 w-4" />
@@ -126,7 +126,7 @@ export function ServicioRow({ servicio }: { servicio: Servicio }) {
       </div>
       <a
         href={`/admin/servicios/${servicio.id}/qr`}
-        className="text-xs text-stone-500 underline underline-offset-2 transition hover:text-stone-700"
+        className="text-xs text-muted-soft underline underline-offset-2 transition hover:text-foreground"
       >
         Ver / imprimir QR para sumar puntos (/sumar/{servicio.id})
       </a>

@@ -16,7 +16,7 @@ export function TelefonoForm({ callbackUrl }: { callbackUrl: string | null }) {
       )}
 
       <div className="flex flex-col gap-1 text-left">
-        <label htmlFor="nombre" className="text-xs text-stone-500">
+        <label htmlFor="nombre" className="text-xs text-muted-soft">
           Nombre y apellido
         </label>
         <input
@@ -26,12 +26,12 @@ export function TelefonoForm({ callbackUrl }: { callbackUrl: string | null }) {
           autoComplete="name"
           required
           placeholder="Tu nombre completo"
-          className="rounded-lg border border-stone-300 px-3 py-2 text-sm transition hover:border-stone-400 focus:border-stone-500 focus:outline-none"
+          className="rounded-lg border border-border-strong px-3 py-2 text-sm transition hover:border-reseda focus:border-accent focus:outline-none"
         />
       </div>
 
       <div className="flex flex-col gap-1 text-left">
-        <label htmlFor="telefono" className="text-xs text-stone-500">
+        <label htmlFor="telefono" className="text-xs text-muted-soft">
           Número de teléfono
         </label>
         <input
@@ -41,12 +41,12 @@ export function TelefonoForm({ callbackUrl }: { callbackUrl: string | null }) {
           autoComplete="tel"
           required
           placeholder="11 1234-5678"
-          className="rounded-lg border border-stone-300 px-3 py-2 text-sm transition hover:border-stone-400 focus:border-stone-500 focus:outline-none"
+          className="rounded-lg border border-border-strong px-3 py-2 text-sm transition hover:border-reseda focus:border-accent focus:outline-none"
         />
       </div>
 
       <div className="flex flex-col gap-1 text-left">
-        <label htmlFor="password" className="text-xs text-stone-500">
+        <label htmlFor="password" className="text-xs text-muted-soft">
           Contraseña
         </label>
         <input
@@ -57,24 +57,24 @@ export function TelefonoForm({ callbackUrl }: { callbackUrl: string | null }) {
           required
           minLength={4}
           placeholder="Al menos 4 caracteres"
-          className="rounded-lg border border-stone-300 px-3 py-2 text-sm transition hover:border-stone-400 focus:border-stone-500 focus:outline-none"
+          className="rounded-lg border border-border-strong px-3 py-2 text-sm transition hover:border-reseda focus:border-accent focus:outline-none"
         />
       </div>
 
       {state.error && (
-        <p className="text-sm text-red-600" role="alert">
+        <p className="text-sm text-danger" role="alert">
           {state.error}
         </p>
       )}
 
       <BotonSubmit
         pendingText="Ingresando…"
-        className="w-full rounded-full bg-stone-900 px-6 py-3 font-medium text-white transition hover:bg-stone-700 active:scale-[0.98]"
+        className="w-full rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground transition hover:bg-primary-hover active:scale-[0.98]"
       >
         Continuar
       </BotonSubmit>
 
-      <p className="text-xs text-stone-400">
+      <p className="text-xs text-muted-faint">
         Si es la primera vez, se crea tu cuenta con estos datos. Guardá bien
         tu teléfono y tu contraseña: no hay forma de recuperarla si te la
         olvidás.

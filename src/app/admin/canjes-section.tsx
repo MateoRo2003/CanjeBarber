@@ -18,7 +18,7 @@ export async function CanjesSection() {
 
   if (transacciones.length === 0) {
     return (
-      <p className="text-sm text-stone-500">
+      <p className="text-sm text-muted-soft">
         Todavía no hay canjes ni ajustes.
       </p>
     );
@@ -29,7 +29,7 @@ export async function CanjesSection() {
       {transacciones.map((t) => (
         <li
           key={t.id}
-          className="flex items-center justify-between rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm"
+          className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-2 text-sm"
         >
           <span>
             <strong>{t.cliente.nombre}</strong>{" "}
@@ -37,7 +37,7 @@ export async function CanjesSection() {
               ? `canjeó ${premiosPorId.get(t.referenciaId)?.nombre ?? "premio eliminado"}`
               : `ajuste manual: ${t.puntos >= 0 ? "+" : ""}${t.puntos} pts (${t.nota})`}
           </span>
-          <span className="shrink-0 text-stone-500">
+          <span className="shrink-0 text-muted-soft">
             {new Date(t.fecha).toLocaleString("es-AR")}
           </span>
         </li>

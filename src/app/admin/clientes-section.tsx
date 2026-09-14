@@ -23,38 +23,38 @@ export async function ClientesSection({ query }: { query: string }) {
   return (
     <>
       {!query && (
-        <p className="text-xs text-stone-500">
+        <p className="text-xs text-muted-soft">
           Mostrando los clientes registrados más recientes.
         </p>
       )}
 
       <ul className="flex flex-col gap-3">
         {clientes.length === 0 && (
-          <p className="text-sm text-stone-500">Sin resultados.</p>
+          <p className="text-sm text-muted-soft">Sin resultados.</p>
         )}
         {clientes.map((cliente) => (
           <li
             key={cliente.id}
-            className="flex flex-col gap-2 rounded-xl border border-stone-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
+            className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-4 sm:flex-row sm:items-center sm:justify-between"
           >
             <div>
               <p className="font-medium">
                 {cliente.nombre}{" "}
                 {!cliente.activo && (
-                  <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
+                  <span className="rounded-full bg-danger-surface px-2 py-0.5 text-xs font-medium text-danger">
                     Deshabilitado
                   </span>
                 )}
               </p>
-              <p className="text-sm text-stone-500">
+              <p className="text-sm text-muted-soft">
                 {[cliente.email, cliente.telefono].filter(Boolean).join(" · ")}
               </p>
-              <p className="text-sm text-stone-500">
+              <p className="text-sm text-muted-soft">
                 {cliente.puntosActuales} puntos
               </p>
               <a
                 href={`/admin/clientes/${cliente.id}`}
-                className="text-xs text-stone-500 underline underline-offset-2 transition hover:text-stone-700"
+                className="text-xs text-muted-soft underline underline-offset-2 transition hover:text-foreground"
               >
                 Ver ficha e historial
               </a>
@@ -65,7 +65,7 @@ export async function ClientesSection({ query }: { query: string }) {
                 <select
                   name="servicioId"
                   required
-                  className="rounded-lg border border-stone-300 px-2 py-2 text-sm transition hover:border-stone-400 focus:border-stone-500 focus:outline-none"
+                  className="rounded-lg border border-border-strong px-2 py-2 text-sm transition hover:border-reseda focus:border-accent focus:outline-none"
                 >
                   {servicios.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -75,13 +75,13 @@ export async function ClientesSection({ query }: { query: string }) {
                 </select>
                 <BotonSubmit
                   pendingText="Sumando…"
-                  className="rounded-lg bg-stone-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-stone-700"
+                  className="rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary-hover"
                 >
                   Sumar
                 </BotonSubmit>
               </form>
             ) : (
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-muted-faint">
                 Cargá un servicio activo para poder sumar puntos.
               </p>
             )}

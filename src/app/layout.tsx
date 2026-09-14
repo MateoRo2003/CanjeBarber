@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -15,6 +15,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Barbería · Puntos y Premios",
   description: "Sumá puntos por tus cortes y canjealos por premios.",
+};
+
+// Pinta de verde la barra del navegador en el celular (y la barra de
+// estado cuando se agrega la app a la pantalla de inicio).
+export const viewport: Viewport = {
+  themeColor: "#0d330e",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

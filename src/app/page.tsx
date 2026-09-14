@@ -22,19 +22,27 @@ export default async function LandingPage({
     <main className="flex flex-1 flex-col">
       <section className="flex flex-1 flex-col items-center justify-center gap-10 px-6 py-16 text-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-stone-900 text-accent-foreground">
-            <Scissors className="h-7 w-7" strokeWidth={1.75} />
+          {/* Halo verde suave detrás del logo: da profundidad sin sumar
+              elementos a la pantalla. */}
+          <div className="relative">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -inset-10 rounded-full bg-reseda/20 blur-3xl"
+            />
+            <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-moss via-surface-dark to-surface-darkest text-on-dark shadow-lg shadow-forest/25 ring-1 ring-moss/50">
+              <Scissors className="h-7 w-7" strokeWidth={1.75} />
+            </div>
           </div>
           <div className="flex flex-col gap-2">
-            <h1 className="text-3xl font-bold tracking-tight text-stone-900">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
               Puntos de la barbería
             </h1>
-            <p className="max-w-xs text-balance text-stone-600">
+            <p className="max-w-xs text-balance text-muted">
               Sumá puntos en cada corte y canjealos por descuentos, productos
               y cortes gratis. Sin turnos, sin vueltas.
             </p>
             {error === "AccessDenied" && (
-              <p className="max-w-xs text-balance text-sm text-red-600">
+              <p className="max-w-xs text-balance text-sm text-danger">
                 Esta cuenta fue deshabilitada. Consultá con el barbero.
               </p>
             )}
@@ -50,7 +58,7 @@ export default async function LandingPage({
           {destino && <input type="hidden" name="callbackUrl" value={destino} />}
           <BotonSubmit
             pendingText="Redirigiendo…"
-            className="rounded-full border border-stone-300 bg-white px-6 py-3 font-medium text-stone-800 shadow-sm transition hover:bg-stone-100 hover:shadow active:scale-[0.98]"
+            className="rounded-full border border-border-strong bg-surface px-6 py-3 font-medium text-foreground shadow-sm transition hover:bg-surface-muted hover:shadow active:scale-[0.98]"
           >
             <svg viewBox="0 0 48 48" className="h-5 w-5 shrink-0" aria-hidden>
               <path
@@ -72,7 +80,7 @@ export default async function LandingPage({
             </svg>
             Iniciar sesión con Google
           </BotonSubmit>
-          <p className="text-xs text-stone-400">
+          <p className="text-xs text-muted-faint">
             Sin contraseñas. Tu cuenta de Google es tu carnet de puntos.
           </p>
         </form>
@@ -83,13 +91,13 @@ export default async function LandingPage({
               ? `/telefono?callbackUrl=${encodeURIComponent(destino)}`
               : "/telefono"
           }
-          className="text-xs text-stone-500 underline underline-offset-2 hover:text-stone-700"
+          className="text-xs text-muted-soft underline underline-offset-2 hover:text-foreground"
         >
           ¿Alternativa? Registrate con tu número de teléfono
         </a>
       </section>
 
-      <footer className="px-6 pb-6 text-center text-xs text-stone-400">
+      <footer className="px-6 pb-6 text-center text-xs text-muted-faint">
         ¿Sos el barbero? Iniciá sesión con tu cuenta de administrador.
       </footer>
     </main>

@@ -36,7 +36,7 @@ export default async function CanjearPage({
   if (!premio || !premio.activo) {
     return (
       <MensajeCentral icono={Ban} titulo="Premio no disponible">
-        <p className="text-stone-600">
+        <p className="text-muted">
           Este premio no existe o ya no está activo.
         </p>
         <VolverAlPerfil />
@@ -49,14 +49,14 @@ export default async function CanjearPage({
   if (faltan > 0) {
     return (
       <MensajeCentral icono={Lock} titulo={premio.nombre}>
-        <p className="text-stone-600">
+        <p className="text-muted">
           Te faltan{" "}
-          <span className="font-semibold text-stone-900">
+          <span className="font-semibold text-foreground">
             {faltan} puntos
           </span>{" "}
           para canjear este premio.
         </p>
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-muted-soft">
           Tenés {cliente.puntosActuales} de {premio.puntosCosto} puntos.
         </p>
         <VolverAlPerfil />
@@ -68,11 +68,11 @@ export default async function CanjearPage({
 
   return (
     <MensajeCentral icono={Gift} titulo="Confirmar canje">
-      <p className="text-stone-700">
+      <p className="text-muted">
         Vas a canjear:{" "}
-        <span className="font-semibold text-stone-900">{premio.nombre}</span>
+        <span className="font-semibold text-foreground">{premio.nombre}</span>
       </p>
-      <p className="text-sm text-stone-500">
+      <p className="text-sm text-muted-soft">
         Cuesta {premio.puntosCosto} puntos · Tenés{" "}
         {cliente.puntosActuales} puntos
       </p>
@@ -93,7 +93,7 @@ function VolverAlPerfil({ texto = "Volver a mi perfil" }: { texto?: string }) {
   return (
     <Link
       href="/perfil"
-      className="text-sm text-stone-500 underline underline-offset-2 hover:text-stone-700"
+      className="text-sm text-muted-soft underline underline-offset-2 hover:text-foreground"
     >
       {texto}
     </Link>
@@ -111,10 +111,10 @@ function MensajeCentral({
 }) {
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-4 px-6 py-16 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-stone-100 text-stone-700">
+      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-surface-muted text-fern ring-1 ring-border">
         <Icono className="h-6 w-6" strokeWidth={1.75} />
       </div>
-      <h1 className="text-2xl font-bold text-stone-900">{titulo}</h1>
+      <h1 className="text-2xl font-bold text-foreground">{titulo}</h1>
       {children}
     </main>
   );

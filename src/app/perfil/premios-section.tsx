@@ -13,7 +13,7 @@ export async function PremiosSection({
 
   if (premios.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-stone-300 px-4 py-6 text-center text-sm text-stone-500">
+      <p className="rounded-xl border border-dashed border-border-strong px-4 py-6 text-center text-sm text-muted-soft">
         Todavía no hay premios cargados. Volvé a mirar más adelante.
       </p>
     );
@@ -26,20 +26,31 @@ export async function PremiosSection({
         return (
           <li
             key={premio.id}
-            className="flex items-center justify-between gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 shadow-sm"
+            className={`flex items-center justify-between gap-3 rounded-xl border bg-surface px-4 py-3 shadow-sm transition ${
+              // El premio que ya puede canjear se destaca del resto.
+              alcanza
+                ? "border-accent/35 shadow-fern/10"
+                : "border-border hover:border-border-strong"
+            }`}
           >
             <div>
-              <p className="font-medium text-stone-900">{premio.nombre}</p>
-              <p className="text-sm text-stone-500">
+              <p className="font-medium text-foreground">{premio.nombre}</p>
+              <p className="text-sm text-muted-soft">
                 {premio.puntosCosto} puntos
+                {!alcanza && (
+                  <span className="text-muted-faint">
+                    {" "}
+                    · te faltan {premio.puntosCosto - puntosActuales}
+                  </span>
+                )}
               </p>
             </div>
             <Link
               href={`/canjear/${premio.id}`}
               className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition active:scale-[0.97] ${
                 alcanza
-                  ? "bg-accent text-accent-foreground hover:opacity-90"
-                  : "bg-stone-100 text-stone-400 hover:bg-stone-200"
+                  ? "bg-accent text-accent-foreground hover:bg-accent-hover"
+                  : "bg-surface-muted text-muted hover:bg-border"
               }`}
             >
               {alcanza ? "Canjear" : "Ver"}

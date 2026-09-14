@@ -68,10 +68,10 @@ export default async function ReportesPage() {
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-10 px-6 py-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-stone-900">Reportes de uso</h1>
+        <h1 className="text-xl font-bold text-foreground">Reportes de uso</h1>
         <a
           href="/admin"
-          className="text-sm text-stone-500 underline underline-offset-2 transition hover:text-stone-700"
+          className="text-sm text-muted-soft underline underline-offset-2 transition hover:text-foreground"
         >
           ← Volver al panel
         </a>
@@ -94,11 +94,11 @@ export default async function ReportesPage() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="font-semibold text-stone-900">
+        <h2 className="font-semibold text-foreground">
           Servicios más usados
         </h2>
         {rankingServicios.length === 0 ? (
-          <p className="text-sm text-stone-500">
+          <p className="text-sm text-muted-soft">
             Todavía no hay puntos sumados por ningún servicio.
           </p>
         ) : (
@@ -106,10 +106,10 @@ export default async function ReportesPage() {
             {rankingServicios.map((r) => (
               <li
                 key={r.nombre}
-                className="flex items-center justify-between rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm"
+                className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-2 text-sm"
               >
                 <span>{r.nombre}</span>
-                <span className="text-stone-500">
+                <span className="text-muted-soft">
                   {r.veces} veces · {r.puntos} pts otorgados
                 </span>
               </li>
@@ -119,18 +119,18 @@ export default async function ReportesPage() {
       </section>
 
       <section className="flex flex-col gap-3 pb-10">
-        <h2 className="font-semibold text-stone-900">Premios más canjeados</h2>
+        <h2 className="font-semibold text-foreground">Premios más canjeados</h2>
         {rankingPremios.length === 0 ? (
-          <p className="text-sm text-stone-500">Todavía no hay canjes.</p>
+          <p className="text-sm text-muted-soft">Todavía no hay canjes.</p>
         ) : (
           <ul className="flex flex-col gap-2">
             {rankingPremios.map((r) => (
               <li
                 key={r.nombre}
-                className="flex items-center justify-between rounded-lg border border-stone-200 bg-white px-4 py-2 text-sm"
+                className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-2 text-sm"
               >
                 <span>{r.nombre}</span>
-                <span className="text-stone-500">
+                <span className="text-muted-soft">
                   {r.veces} veces · {r.puntos} pts canjeados
                 </span>
               </li>
@@ -154,13 +154,15 @@ function Kpi({
   return (
     <div
       className={`rounded-xl border p-3 text-center ${
-        alerta ? "border-amber-300 bg-amber-50" : "border-stone-200 bg-white"
+        alerta
+          ? "border-danger-border bg-danger-surface"
+          : "border-border bg-surface"
       }`}
     >
-      <p className="text-2xl font-bold tabular-nums text-stone-900">
+      <p className="text-2xl font-bold tabular-nums text-foreground">
         {valor}
       </p>
-      <p className="text-xs text-stone-500">{label}</p>
+      <p className="text-xs text-muted-soft">{label}</p>
     </div>
   );
 }

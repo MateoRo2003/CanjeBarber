@@ -48,13 +48,15 @@ export function AvisoActividad() {
       {toasts.map((t) => (
         <div
           key={t.id}
-          className="flex items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 shadow-lg"
+          className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 shadow-lg"
         >
+          {/* Dos verdes distintos de la paleta para que canje y suma se
+              distingan de un vistazo, no solo por el ícono. */}
           <div
             className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
               t.tipo === "CANJE"
-                ? "bg-accent/10 text-accent"
-                : "bg-green-100 text-green-700"
+                ? "bg-primary/10 text-primary"
+                : "bg-accent/12 text-accent"
             }`}
           >
             {t.tipo === "CANJE" ? (
@@ -63,11 +65,11 @@ export function AvisoActividad() {
               <PlusCircle className="h-5 w-5" strokeWidth={1.75} />
             )}
           </div>
-          <p className="text-sm text-stone-800">
+          <p className="text-sm text-foreground">
             <strong>{t.clienteNombre}</strong>{" "}
             {t.tipo === "CANJE" ? "canjeó" : "sumó puntos por"}{" "}
             <strong>{t.detalle}</strong>{" "}
-            <span className="text-stone-500">
+            <span className="text-muted-soft">
               ({t.tipo === "CANJE" ? "-" : "+"}
               {t.puntos} pts)
             </span>
