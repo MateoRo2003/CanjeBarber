@@ -59,6 +59,9 @@ enum TipoTransaccion {
   // Ajuste manual de puntos hecho por el admin (corrección, cortesía,
   // etc.), positivo o negativo, sin pasar por servicio ni premio.
   AJUSTE
+  // Bono automático por primer login / registro (ver modelo
+  // Configuracion). Se otorga una sola vez, al crear el Cliente.
+  BONUS
 }
 
 model Transaccion {
@@ -69,7 +72,7 @@ model Transaccion {
   clienteId     String
   tipo          TipoTransaccion
   // id del Servicio si tipo=SUMA, id del Premio si tipo=CANJE,
-  // "manual" si tipo=AJUSTE.
+  // "manual" si tipo=AJUSTE, "bienvenida" si tipo=BONUS.
   referenciaId  String
   puntos        Int
   // Motivo del ajuste manual (solo aplica si tipo=AJUSTE).
@@ -78,4 +81,19 @@ model Transaccion {
 
   @@index([clienteId])
   @@map("transacciones")
+}
+
+// Configuración global de la app (fila única, id fijo "config"). Por ahora
+// solo el bono de bienvenida, pero deja lugar para sumar más ajustes a
+// futuro sin tener que crear una tabla por cada uno.
+model Configuracion {
+  id                String   @id @default("config")
+  // Si está activo, todo Cliente NUEVO (primer login con Google o primer
+  // registro por teléfono) recibe puntosBienvenida automáticamente. No
+  // se vuelve a otorgar en logins siguientes.
+  bienvenidaActiva  Boolean  @default(false)
+  puntosBienvenida  Int      @default(0)
+  actualizadoEn     DateTime @updatedAt
+
+  @@map("configuracion")
 }

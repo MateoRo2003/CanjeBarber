@@ -79,7 +79,17 @@ export default async function PerfilPage() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="font-semibold text-stone-900">Premios disponibles</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold text-stone-900">
+            Premios disponibles
+          </h2>
+          <a
+            href="/perfil/historial"
+            className="text-sm text-stone-500 underline underline-offset-2 transition hover:text-stone-700"
+          >
+            Ver historial
+          </a>
+        </div>
         <Suspense fallback={<SkeletonLista filas={3} />}>
           <PremiosSection puntosActuales={cliente.puntosActuales} />
         </Suspense>

@@ -149,6 +149,7 @@ export default async function ClienteDetallePage({
                   {t.tipo === "CANJE" &&
                     `canjeó ${nombresPorId.get(t.referenciaId) ?? "premio eliminado"}`}
                   {t.tipo === "AJUSTE" && `ajuste manual: ${t.nota}`}
+                  {t.tipo === "BONUS" && "bono de bienvenida"}
                 </span>
               </div>
               <span className="shrink-0 text-stone-500">

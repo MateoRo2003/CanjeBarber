@@ -5,6 +5,7 @@ import { esAdminEmail } from "@/lib/admin-emails";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, verifyPassword } from "@/lib/password";
 import { normalizarTelefono } from "@/lib/telefono";
+import { otorgarBonusBienvenida } from "@/lib/bonus-bienvenida";
 
 // IMPORTANTE: acá NO se usa Supabase Auth. El login con Google lo maneja
 // Auth.js directamente contra la API de Google, y el callback OAuth vive
@@ -46,6 +47,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               passwordHash: hashPassword(password),
             },
           });
+          cliente = await otorgarBonusBienvenida(cliente);
         } else if (
           !cliente.passwordHash ||
           !verifyPassword(password, cliente.passwordHash)
@@ -104,18 +106,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           token.isAdmin = true;
           token.clienteId = undefined;
         } else if (user.email) {
-          const cliente = await prisma.cliente.upsert({
+          // find-then-create (en vez de upsert) para poder distinguir acá
+          // mismo un alta nueva de un login de alguien que ya existía, y
+          // así otorgar el bono de bienvenida solo la primera vez.
+          const existente = await prisma.cliente.findUnique({
             where: { email: user.email },
-            update: {
-              nombre: user.name ?? undefined,
-              googleId: account.providerAccountId,
-            },
-            create: {
-              nombre: user.name ?? "",
-              email: user.email,
-              googleId: account.providerAccountId,
-            },
           });
+          let cliente;
+          if (existente) {
+            cliente = await prisma.cliente.update({
+              where: { id: existente.id },
+              data: {
+                nombre: user.name ?? undefined,
+                googleId: account.providerAccountId,
+              },
+            });
+          } else {
+            cliente = await prisma.cliente.create({
+              data: {
+                nombre: user.name ?? "",
+                email: user.email,
+                googleId: account.providerAccountId,
+              },
+            });
+            cliente = await otorgarBonusBienvenida(cliente);
+          }
           token.clienteId = cliente.id;
           token.isAdmin = false;
         }

@@ -10,6 +10,7 @@ import { ClientesSection } from "./clientes-section";
 import { CanjesSection } from "./canjes-section";
 import { ServiciosSection } from "./servicios-section";
 import { PremiosSection } from "./premios-section";
+import { ConfiguracionSection } from "./configuracion-section";
 
 export default async function AdminPage({
   searchParams,
@@ -50,6 +51,14 @@ export default async function AdminPage({
           </form>
         </div>
       </header>
+
+      {/* Configuración general de la app */}
+      <section className="flex flex-col gap-3">
+        <h2 className="font-semibold">Configuración</h2>
+        <Suspense fallback={<SkeletonLista filas={1} />}>
+          <ConfiguracionSection />
+        </Suspense>
+      </section>
 
       {/* Buscador de clientes + sumar puntos */}
       <section className="flex flex-col gap-4">

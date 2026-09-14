@@ -190,6 +190,29 @@ export async function ajustarPuntos(formData: FormData) {
 }
 
 /**
+ * Prende/apaga y ajusta el bono de puntos por primer login/registro (ver
+ * Configuracion en el schema). Fila única con id fijo "config" — por eso
+ * upsert en vez de create/update.
+ */
+export async function guardarBonusBienvenida(formData: FormData) {
+  await requireAdmin();
+
+  const activo = formData.get("activo") === "on";
+  const puntos = Number(formData.get("puntos"));
+  if (!Number.isFinite(puntos) || !Number.isInteger(puntos) || puntos < 0) {
+    throw new Error("Ingresá una cantidad de puntos válida (0 o más).");
+  }
+
+  await prisma.configuracion.upsert({
+    where: { id: "config" },
+    update: { bienvenidaActiva: activo, puntosBienvenida: puntos },
+    create: { id: "config", bienvenidaActiva: activo, puntosBienvenida: puntos },
+  });
+
+  revalidatePath("/admin");
+}
+
+/**
  * Deshabilita o rehabilita a un cliente: no puede iniciar sesión ni usar
  * la app mientras esté deshabilitado, pero conserva todos sus puntos e
  * historial (a diferencia de eliminarlo). Reversible en cualquier momento.
